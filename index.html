@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CAI PEREI Team · Jira Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg:       #0f172a;
+    --surface:  #1e293b;
+    --surface2: #263347;
+    --border:   #2d3f56;
+    --border2:  #374f68;
+    --navy:     #1e3a5f;
+    --cyan:     #38bdf8;
+    --cyan-dim: rgba(56,189,248,0.12);
+    --purple:   #818cf8;
+    --purple-dim: rgba(129,140,248,0.12);
+    --green:    #34d399;
+    --green-dim: rgba(52,211,153,0.12);
+    --amber:    #fbbf24;
+    --amber-dim: rgba(251,191,36,0.12);
+    --red:      #f87171;
+    --red-dim:  rgba(248,113,113,0.12);
+    --teal:     #2dd4bf;
+    --teal-dim: rgba(45,212,191,0.12);
+    --text:     #f1f5f9;
+    --text2:    #94a3b8;
+    --text3:    #64748b;
+    --q4-color: #818cf8;
+    --q1-color: #38bdf8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    min-height: 100vh;
+    padding: 32px 36px 48px;
+  }
+
+  /* ── HEADER ─────────────────────────────────────────── */
+  header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header-eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .live-dot {
+    width: 6px; height: 6px;
+    background: var(--cyan);
+    border-radius: 50%;
+    animation: blink 2s infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    line-height: 1.1;
+  }
+
+  h1 em { font-style: normal; color: var(--cyan); }
+
+  .header-sub {
+    font-size: 13px;
+    color: var(--text3);
+    margin-top: 5px;
+  }
+
+  .header-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+  }
+
+  .period-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 7px 14px;
+  }
+
+  .period-label {
+    font-size: 11px;
+    color: var(--text3);
+    margin-right: 4px;
+  }
+
+  .qpill {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 2px 9px;
+    border-radius: 4px;
+  }
+
+  .qpill-q4 { background: rgba(129,140,248,0.15); color: var(--q4-color); border: 1px solid rgba(129,140,248,0.25); }
+  .qpill-q1 { background: rgba(56,189,248,0.1); color: var(--q1-color); border: 1px solid rgba(56,189,248,0.2); }
+
+  .period-dates { font-size: 10px; color: var(--text3); }
+
+  /* ── SECTION LABEL ──────────────────────────────────── */
+  .section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 10px;
+  }
+
+  /* ── KPI GRID ───────────────────────────────────────── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .kpi {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 16px 14px;
+    position: relative;
+    overflow: hidden;
+    cursor: default;
+    transition: border-color 0.2s, transform 0.15s;
+  }
+
+  .kpi:hover {
+    transform: translateY(-2px);
+  }
+
+  .kpi::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 10px;
+    pointer-events: none;
+  }
+
+  /* accent top bar */
+  .kpi::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 10px 10px 0 0;
+  }
+
+  .kpi-cyan::before   { background: var(--cyan); }
+  .kpi-cyan:hover     { border-color: rgba(56,189,248,0.4); box-shadow: 0 0 0 1px rgba(56,189,248,0.12) inset; }
+  .kpi-purple::before { background: var(--purple); }
+  .kpi-purple:hover   { border-color: rgba(129,140,248,0.4); }
+  .kpi-teal::before   { background: var(--teal); }
+  .kpi-teal:hover     { border-color: rgba(45,212,191,0.4); }
+  .kpi-green::before  { background: var(--green); }
+  .kpi-green:hover    { border-color: rgba(52,211,153,0.4); }
+  .kpi-amber::before  { background: var(--amber); }
+  .kpi-amber:hover    { border-color: rgba(251,191,36,0.4); }
+  .kpi-red::before    { background: var(--red); }
+  .kpi-red:hover      { border-color: rgba(248,113,113,0.4); }
+
+  .kpi-icon {
+    font-size: 16px;
+    margin-bottom: 10px;
+    opacity: 0.7;
+  }
+
+  .kpi-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .kpi-value {
+    font-family: 'Outfit', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--text);
+  }
+
+  .kpi-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+  }
+
+  .kpi-sub {
+    font-size: 10px;
+    color: var(--text3);
+  }
+
+  .kpi-delta {
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .delta-up   { color: var(--green); }
+  .delta-down { color: var(--red); }
+  .delta-neu  { color: var(--text3); }
+
+  /* ── GRID LAYOUTS ───────────────────────────────────── */
+  .row-2col {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+
+  .row-3col {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+
+  /* ── CARD ───────────────────────────────────────────── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 22px;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+
+  .card-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text2);
+  }
+
+  .card-badge {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--cyan);
+    background: var(--cyan-dim);
+    border: 1px solid rgba(56,189,248,0.2);
+    padding: 2px 9px;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+  }
+
+  canvas { max-height: 210px; }
+
+  /* ── COMPARE ROWS ───────────────────────────────────── */
+  .compare-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 9px 12px;
+    border-radius: 7px;
+    background: var(--surface2);
+    margin-bottom: 8px;
+  }
+
+  .compare-label {
+    font-size: 11px;
+    color: var(--text2);
+    width: 78px;
+    flex-shrink: 0;
+    font-weight: 500;
+  }
+
+  .compare-bars { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+
+  .compare-bar-row { display: flex; align-items: center; gap: 8px; }
+
+  .cq-tag {
+    font-size: 9px;
+    font-weight: 600;
+    width: 36px;
+    flex-shrink: 0;
+    letter-spacing: 0.03em;
+  }
+
+  .cq-q4 { color: var(--q4-color); }
+  .cq-q1 { color: var(--q1-color); }
+
+  .cbar-outer {
+    flex: 1;
+    height: 7px;
+    background: var(--bg);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .cbar-inner { height: 100%; border-radius: 4px; }
+
+  .cbar-q4 { background: linear-gradient(90deg, #6366f1, #818cf8); }
+  .cbar-q1 { background: linear-gradient(90deg, #0ea5e9, #38bdf8); }
+  .cbar-red { background: var(--red); }
+  .cbar-amber { background: var(--amber); }
+
+  .cbar-num {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text);
+    width: 22px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* ── STATUS BARS ────────────────────────────────────── */
+  .status-list { margin-top: 14px; }
+
+  .status-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .status-name {
+    font-size: 11px;
+    color: var(--text2);
+    width: 88px;
+    flex-shrink: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .sbar-wrap {
+    flex: 1;
+    height: 5px;
+    background: var(--surface2);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .sbar-fill { height: 100%; border-radius: 3px; }
+
+  .status-count {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text);
+    width: 26px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* ── TABLE ──────────────────────────────────────────── */
+  .table-wrap {
+    overflow-y: auto;
+    max-height: 320px;
+    border-radius: 8px;
+  }
+
+  .table-wrap::-webkit-scrollbar { width: 4px; }
+  .table-wrap::-webkit-scrollbar-track { background: transparent; }
+  .table-wrap::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead th {
+    position: sticky;
+    top: 0;
+    background: var(--surface2);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    padding: 9px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  thead th:first-child { border-radius: 6px 0 0 0; }
+  thead th:last-child  { border-radius: 0 6px 0 0; }
+
+  tbody tr {
+    border-bottom: 1px solid rgba(45,63,86,0.5);
+    transition: background 0.12s;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--surface2); }
+
+  tbody td {
+    padding: 9px 12px;
+    font-size: 12px;
+    vertical-align: middle;
+  }
+
+  .td-cr   { color: var(--cyan); font-weight: 600; white-space: nowrap; font-size: 12px; }
+  .td-bap  { color: var(--purple); font-weight: 600; white-space: nowrap; font-size: 12px; }
+
+  /* ── CHIPS ──────────────────────────────────────────── */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 9px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+
+  .chip::before { content: ''; width: 5px; height: 5px; border-radius: 50%; margin-right: 5px; }
+
+  .chip-closed    { background: var(--green-dim); color: var(--green);  border: 1px solid rgba(52,211,153,0.2); }
+  .chip-closed::before { background: var(--green); }
+  .chip-canceled  { background: var(--red-dim);   color: var(--red);    border: 1px solid rgba(248,113,113,0.2); }
+  .chip-canceled::before { background: var(--red); }
+  .chip-scheduled { background: var(--amber-dim); color: var(--amber);  border: 1px solid rgba(251,191,36,0.2); }
+  .chip-scheduled::before { background: var(--amber); }
+  .chip-inprog    { background: var(--cyan-dim);  color: var(--cyan);   border: 1px solid rgba(56,189,248,0.2); }
+  .chip-inprog::before { background: var(--cyan); }
+
+  /* ── COMPLETION METER ───────────────────────────────── */
+  .meter-section {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  .meter-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 8px;
+  }
+
+  .meter-row { display: flex; align-items: center; gap: 12px; }
+
+  .meter-track {
+    flex: 1;
+    height: 10px;
+    background: var(--surface2);
+    border-radius: 5px;
+    overflow: hidden;
+  }
+
+  .meter-fill {
+    height: 100%;
+    border-radius: 5px;
+    background: linear-gradient(90deg, #059669, #34d399);
+  }
+
+  .meter-pct {
+    font-family: 'Outfit', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--green);
+    flex-shrink: 0;
+  }
+
+  /* ── FOOTNOTE ───────────────────────────────────────── */
+  .footnote {
+    margin-top: 28px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: var(--text3);
+  }
+
+  /* ── QUARTER SELECTOR ───────────────────────────────── */
+  .quarter-select {
+    appearance: none;
+    -webkit-appearance: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 7px 30px 7px 14px;
+    cursor: pointer;
+    outline: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%2364748b' d='M5 6L0 0h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    transition: border-color 0.2s;
+  }
+  .quarter-select:hover { border-color: var(--border2); }
+  .quarter-select:focus { border-color: rgba(56,189,248,0.5); }
+  .quarter-select option { background: var(--surface2); color: var(--text); }
+
+  /* ── ANIMATIONS ─────────────────────────────────────── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .kpi { animation: fadeUp 0.4s ease both; }
+  .kpi:nth-child(1) { animation-delay: 0.04s; }
+  .kpi:nth-child(2) { animation-delay: 0.08s; }
+  .kpi:nth-child(3) { animation-delay: 0.12s; }
+  .kpi:nth-child(4) { animation-delay: 0.16s; }
+  .kpi:nth-child(5) { animation-delay: 0.20s; }
+  .kpi:nth-child(6) { animation-delay: 0.24s; }
+
+  .card { animation: fadeUp 0.5s ease both; animation-delay: 0.28s; }
+
+  /* ── SECTION DIVIDER ─────────────────────────────── */
+  .section-divider {
+    margin: 36px 0 20px;
+    padding-top: 28px;
+    border-top: 2px solid var(--border);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  .section-divider-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.1;
+  }
+
+  .section-divider-title em { font-style: normal; color: var(--purple); }
+
+  .section-divider-sub {
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 4px;
+  }
+
+  /* ── APPM CHIPS ──────────────────────────────────── */
+  .chip-open    { background: var(--cyan-dim);   color: var(--cyan);   border: 1px solid rgba(56,189,248,0.2); }
+  .chip-open::before { background: var(--cyan); }
+  .chip-inqa    { background: var(--amber-dim);  color: var(--amber);  border: 1px solid rgba(251,191,36,0.2); }
+  .chip-inqa::before { background: var(--amber); }
+  .chip-pending { background: rgba(100,116,139,0.12); color: #94a3b8; border: 1px solid rgba(100,116,139,0.25); }
+  .chip-pending::before { background: #94a3b8; }
+  .chip-rtd     { background: var(--teal-dim);   color: var(--teal);   border: 1px solid rgba(45,212,191,0.2); }
+  .chip-rtd::before { background: var(--teal); }
+  .chip-bizval  { background: var(--purple-dim); color: var(--purple); border: 1px solid rgba(129,140,248,0.2); }
+  .chip-bizval::before { background: var(--purple); }
+  .chip-completed { background: var(--green-dim); color: var(--green); border: 1px solid rgba(52,211,153,0.2); }
+  .chip-completed::before { background: var(--green); }
+  .chip-inprogdev { background: rgba(99,102,241,0.12); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.25); }
+  .chip-inprogdev::before { background: #a5b4fc; }
+  .chip-awaiting  { background: rgba(14,165,233,0.12); color: #7dd3fc; border: 1px solid rgba(14,165,233,0.22); }
+  .chip-awaiting::before { background: #7dd3fc; }
+
+  /* ── APPM TABLE ACCENT ───────────────────────────── */
+  .td-appm { color: var(--purple); font-weight: 600; white-space: nowrap; font-size: 12px; }
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ──────────────────────────────────────────── -->
+<header>
+  <div>
+    <div class="header-eyebrow">
+      <span class="live-dot"></span>
+      GCM Grosvenor · Jira Analytics
+    </div>
+    <h1>CAI PEREI <em>Team</em></h1>
+    <p class="header-sub">BAP Service Requests &amp; Linked Change Requests</p>
+  </div>
+  <div class="header-right">
+    <select id="quarterFilter" class="quarter-select" onchange="applyQuarter(this.value)">
+      <option value="all">All Quarters</option>
+      <option value="q4">Q4 2025 Only</option>
+      <option value="q1">Q1 2026 Only</option>
+    </select>
+    <div class="period-row">
+      <span class="period-label">Reporting Period</span>
+      <span class="qpill qpill-q4">Q4 2025</span>
+      <span style="color:var(--border2)">·</span>
+      <span class="qpill qpill-q1">Q1 2026</span>
+    </div>
+    <div class="period-dates">Oct 2025 – Mar 2026</div>
+  </div>
+</header>
+
+<!-- ── KPI ROW ──────────────────────────────────────────── -->
+<div class="section-label">Key Metrics</div>
+<div class="kpi-grid" style="grid-template-columns:repeat(4,1fr);">
+
+  <div id="bap-tile-0" class="kpi kpi-cyan">
+    <div class="kpi-label">Total BAP Tickets</div>
+    <div class="kpi-value">156</div>
+    <div class="kpi-footer">
+      <span class="kpi-sub">CAI PEREI Solver Group</span>
+    </div>
+  </div>
+
+  <div id="bap-tile-1" class="kpi kpi-purple">
+    <div class="kpi-label">Q4 2025 BAP</div>
+    <div class="kpi-value">88</div>
+    <div class="kpi-footer">
+      <span class="kpi-sub">Oct – Dec 2025</span>
+      <span class="kpi-delta delta-up">↑ High volume</span>
+    </div>
+  </div>
+
+  <div id="bap-tile-2" class="kpi kpi-teal">
+    <div class="kpi-label">Q1 2026 BAP</div>
+    <div class="kpi-value">68</div>
+    <div class="kpi-footer">
+      <span class="kpi-sub">Jan – Mar 2026</span>
+      <span class="kpi-delta delta-down">↓ 23% vs Q4</span>
+    </div>
+  </div>
+
+  <div id="bap-tile-3" class="kpi kpi-amber">
+    <div class="kpi-label">BAP Open / Active</div>
+    <div class="kpi-value">5</div>
+    <div class="kpi-footer">
+      <span class="kpi-sub">In Progress + Pending</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── ROW 1: TREND + QoQ ───────────────────────────────── -->
+<div class="section-label">Volume &amp; Quarter Comparison</div>
+<div class="row-2col">
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Monthly BAP Volume Trend</span>
+      <span class="card-badge">OCT '25 → MAR '26</span>
+    </div>
+    <canvas id="trendChart"></canvas>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Quarter-over-Quarter</span>
+      <span class="card-badge">BAP</span>
+    </div>
+
+    <div class="compare-row">
+      <div class="compare-label">Total</div>
+      <div class="compare-bars">
+        <div class="compare-bar-row">
+          <span class="cq-tag cq-q4">Q4'25</span>
+          <div class="cbar-outer"><div class="cbar-inner cbar-q4" style="width:100%"></div></div>
+          <span class="cbar-num">88</span>
+        </div>
+        <div class="compare-bar-row">
+          <span class="cq-tag cq-q1">Q1'26</span>
+          <div class="cbar-outer"><div class="cbar-inner cbar-q1" style="width:77%"></div></div>
+          <span class="cbar-num">68</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="compare-row">
+      <div class="compare-label">Closed</div>
+      <div class="compare-bars">
+        <div class="compare-bar-row">
+          <span class="cq-tag cq-q4">Q4'25</span>
+          <div class="cbar-outer"><div class="cbar-inner cbar-q4" style="width:93%"></div></div>
+          <span class="cbar-num">82</span>
+        </div>
+        <div class="compare-bar-row">
+          <span class="cq-tag cq-q1">Q1'26</span>
+          <div class="cbar-outer"><div class="cbar-inner cbar-q1" style="width:59%"></div></div>
+          <span class="cbar-num">52</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="compare-row">
+      <div class="compare-label">Resolved</div>
+      <div class="compare-bars">
+        <div class="compare-bar-row">
+          <span class="cq-tag cq-q4">Q4'25</span>
+          <div class="cbar-outer"><div class="cbar-inner cbar-q4" style="width:0%"></div></div>
+          <span class="cbar-num">0</span>
+        </div>
+        <div class="compare-bar-row">
+          <span class="cq-tag cq-q1">Q1'26</span>
+          <div class="cbar-outer"><div class="cbar-inner cbar-q1" style="width:9%"></div></div>
+          <span class="cbar-num">8</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="compare-row">
+      <div class="compare-label">Canceled</div>
+      <div class="compare-bars">
+        <div class="compare-bar-row">
+          <span class="cq-tag cq-q4">Q4'25</span>
+          <div class="cbar-outer"><div class="cbar-inner cbar-red" style="width:7%"></div></div>
+          <span class="cbar-num">6</span>
+        </div>
+        <div class="compare-bar-row">
+          <span class="cq-tag cq-q1">Q1'26</span>
+          <div class="cbar-outer"><div class="cbar-inner cbar-red" style="width:3%"></div></div>
+          <span class="cbar-num">3</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="compare-row">
+      <div class="compare-label">In Progress</div>
+      <div class="compare-bars">
+        <div class="compare-bar-row">
+          <span class="cq-tag cq-q4">Q4'25</span>
+          <div class="cbar-outer"><div class="cbar-inner cbar-amber" style="width:0%"></div></div>
+          <span class="cbar-num">0</span>
+        </div>
+        <div class="compare-bar-row">
+          <span class="cq-tag cq-q1">Q1'26</span>
+          <div class="cbar-outer"><div class="cbar-inner cbar-amber" style="width:5%"></div></div>
+          <span class="cbar-num">4</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── ROW 2: DONUTS ─────────────────────────────────────── -->
+<div class="section-label">Status Distribution</div>
+<div class="row-3col">
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">BAP Status</span>
+      <span class="card-badge">ALL 156</span>
+    </div>
+    <canvas id="bapDonut" style="max-height:170px;"></canvas>
+    <div class="status-list">
+      <div class="status-row">
+        <div class="status-name">Closed</div>
+        <div class="sbar-wrap"><div class="sbar-fill" style="width:87%;background:#34d399;"></div></div>
+        <div class="status-count">136</div>
+      </div>
+      <div class="status-row">
+        <div class="status-name">Resolved</div>
+        <div class="sbar-wrap"><div class="sbar-fill" style="width:5%;background:#6ee7b7;"></div></div>
+        <div class="status-count">8</div>
+      </div>
+      <div class="status-row">
+        <div class="status-name">Canceled</div>
+        <div class="sbar-wrap"><div class="sbar-fill" style="width:6%;background:#f87171;"></div></div>
+        <div class="status-count">9</div>
+      </div>
+      <div class="status-row">
+        <div class="status-name">In Progress</div>
+        <div class="sbar-wrap"><div class="sbar-fill" style="width:3%;background:#fbbf24;"></div></div>
+        <div class="status-count">4</div>
+      </div>
+      <div class="status-row">
+        <div class="status-name">Pending</div>
+        <div class="sbar-wrap"><div class="sbar-fill" style="width:1%;background:#64748b;"></div></div>
+        <div class="status-count">1</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">CR Status (Linked)</span>
+      <span class="card-badge">15 CRs</span>
+    </div>
+    <canvas id="crDonut" style="max-height:170px;"></canvas>
+    <div class="status-list">
+      <div class="status-row">
+        <div class="status-name">Closed</div>
+        <div class="sbar-wrap"><div class="sbar-fill" style="width:73%;background:#34d399;"></div></div>
+        <div class="status-count">11</div>
+      </div>
+      <div class="status-row">
+        <div class="status-name">Scheduled</div>
+        <div class="sbar-wrap"><div class="sbar-fill" style="width:13%;background:#fbbf24;"></div></div>
+        <div class="status-count">2</div>
+      </div>
+      <div class="status-row">
+        <div class="status-name">Canceled</div>
+        <div class="sbar-wrap"><div class="sbar-fill" style="width:13%;background:#f87171;"></div></div>
+        <div class="status-count">2</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">CR Quarter Split</span>
+      <span class="card-badge">LINKED</span>
+    </div>
+    <canvas id="crQuarterBar" style="max-height:170px;"></canvas>
+    <div class="status-list">
+      <div class="status-row">
+        <div class="status-name" style="color:var(--q4-color);">Q4 2025</div>
+        <div class="sbar-wrap"><div class="sbar-fill" style="width:33%;background:var(--q4-color);"></div></div>
+        <div class="status-count">5</div>
+      </div>
+      <div class="status-row">
+        <div class="status-name" style="color:var(--q1-color);">Q1 2026</div>
+        <div class="sbar-wrap"><div class="sbar-fill" style="width:67%;background:var(--q1-color);"></div></div>
+        <div class="status-count">10</div>
+      </div>
+    </div>
+    <div class="meter-section">
+      <div class="meter-label">CR Completion Rate</div>
+      <div class="meter-row">
+        <div class="meter-track">
+          <div class="meter-fill" style="width:73%;"></div>
+        </div>
+        <span class="meter-pct">73%</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── CR TABLE ──────────────────────────────────────────── -->
+<div class="section-label">Change Request Detail</div>
+<div class="card" style="margin-bottom:0;">
+  <div class="card-header">
+    <span class="card-title">Change Requests Linked to CAI PEREI BAP Tickets</span>
+    <span class="card-badge">15 LINKED PAIRS</span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>CR Key</th>
+          <th>Linked BAP</th>
+          <th>Quarter</th>
+          <th>CR Status</th>
+        </tr>
+      </thead>
+      <tbody id="crTableBody">
+        <tr data-quarter="q4"><td class="td-cr">CR-10794</td><td class="td-bap">BAP-27354</td><td><span class="qpill qpill-q4" style="font-size:9px;">Q4 2025</span></td><td><span class="chip chip-closed">Closed</span></td></tr>
+        <tr data-quarter="q4"><td class="td-cr">CR-10983</td><td class="td-bap">BAP-27660</td><td><span class="qpill qpill-q4" style="font-size:9px;">Q4 2025</span></td><td><span class="chip chip-closed">Closed</span></td></tr>
+        <tr data-quarter="q4"><td class="td-cr">CR-11045</td><td class="td-bap">BAP-27691</td><td><span class="qpill qpill-q4" style="font-size:9px;">Q4 2025</span></td><td><span class="chip chip-canceled">Canceled</span></td></tr>
+        <tr data-quarter="q4"><td class="td-cr">CR-11048</td><td class="td-bap">BAP-27679</td><td><span class="qpill qpill-q4" style="font-size:9px;">Q4 2025</span></td><td><span class="chip chip-closed">Closed</span></td></tr>
+        <tr data-quarter="q4"><td class="td-cr">CR-11070</td><td class="td-bap">BAP-27745</td><td><span class="qpill qpill-q4" style="font-size:9px;">Q4 2025</span></td><td><span class="chip chip-scheduled">Scheduled</span></td></tr>
+        <tr data-quarter="q1"><td class="td-cr">CR-11224</td><td class="td-bap">BAP-28014</td><td><span class="qpill qpill-q1" style="font-size:9px;">Q1 2026</span></td><td><span class="chip chip-closed">Closed</span></td></tr>
+        <tr data-quarter="q1"><td class="td-cr">CR-11254</td><td class="td-bap">BAP-28341</td><td><span class="qpill qpill-q1" style="font-size:9px;">Q1 2026</span></td><td><span class="chip chip-closed">Closed</span></td></tr>
+        <tr data-quarter="q1"><td class="td-cr">CR-11261</td><td class="td-bap">BAP-28325</td><td><span class="qpill qpill-q1" style="font-size:9px;">Q1 2026</span></td><td><span class="chip chip-canceled">Canceled</span></td></tr>
+        <tr data-quarter="q1"><td class="td-cr">CR-11266</td><td class="td-bap">BAP-28380</td><td><span class="qpill qpill-q1" style="font-size:9px;">Q1 2026</span></td><td><span class="chip chip-closed">Closed</span></td></tr>
+        <tr data-quarter="q1"><td class="td-cr">CR-11314</td><td class="td-bap">BAP-28439</td><td><span class="qpill qpill-q1" style="font-size:9px;">Q1 2026</span></td><td><span class="chip chip-closed">Closed</span></td></tr>
+        <tr data-quarter="q1"><td class="td-cr">CR-11315</td><td class="td-bap">BAP-28325</td><td><span class="qpill qpill-q1" style="font-size:9px;">Q1 2026</span></td><td><span class="chip chip-closed">Closed</span></td></tr>
+        <tr data-quarter="q1"><td class="td-cr">CR-11788</td><td class="td-bap">BAP-29268</td><td><span class="qpill qpill-q1" style="font-size:9px;">Q1 2026</span></td><td><span class="chip chip-closed">Closed</span></td></tr>
+        <tr data-quarter="q1"><td class="td-cr">CR-11809</td><td class="td-bap">BAP-29294</td><td><span class="qpill qpill-q1" style="font-size:9px;">Q1 2026</span></td><td><span class="chip chip-closed">Closed</span></td></tr>
+        <tr data-quarter="q1"><td class="td-cr">CR-11812</td><td class="td-bap">BAP-29321</td><td><span class="qpill qpill-q1" style="font-size:9px;">Q1 2026</span></td><td><span class="chip chip-closed">Closed</span></td></tr>
+        <tr data-quarter="q1"><td class="td-cr">CR-11823</td><td class="td-bap">BAP-29330</td><td><span class="qpill qpill-q1" style="font-size:9px;">Q1 2026</span></td><td><span class="chip chip-scheduled">Scheduled</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- APPM SECTION                                          -->
+<!-- ══════════════════════════════════════════════════════ -->
+
+<div class="section-divider">
+  <div>
+    <div class="section-divider-title">APPM <em>Tickets</em></div>
+    <div id="appm-section-sub" class="section-divider-sub">Q4 2025 + Q1 2026 · PEREI Line of Business · Oct 2025 – Mar 2026</div>
+  </div>
+  <div class="period-row">
+    <span class="period-label">Period</span>
+    <span id="appm-pill-q4" class="qpill qpill-q4">Q4 2025</span>
+    <span id="appm-pill-sep" style="color:var(--border2)">·</span>
+    <span id="appm-pill-q1" class="qpill qpill-q1">Q1 2026</span>
+    <span class="period-dates" style="margin-left:6px;">Oct 2025 – Mar 2026</span>
+  </div>
+</div>
+
+<!-- APPM KPIs -->
+<div class="section-label">APPM Key Metrics</div>
+<div class="kpi-grid" style="margin-bottom:24px;">
+
+  <div id="appm-tile-0" class="kpi kpi-purple">
+    <div class="kpi-label">Q4 2025 APPM</div>
+    <div class="kpi-value">41</div>
+    <div class="kpi-footer">
+      <span class="kpi-sub">Oct – Dec 2025</span>
+    </div>
+  </div>
+
+  <div id="appm-tile-1" class="kpi kpi-cyan">
+    <div class="kpi-label">Q1 2026 APPM</div>
+    <div class="kpi-value">33</div>
+    <div class="kpi-footer">
+      <span class="kpi-sub">Jan – Mar 2026</span>
+      <span class="kpi-delta delta-down">↓ 20% vs Q4</span>
+    </div>
+  </div>
+
+  <div id="appm-tile-2" class="kpi kpi-green">
+    <div class="kpi-label">Q4 Completed</div>
+    <div class="kpi-value">31</div>
+    <div class="kpi-footer">
+      <span class="kpi-sub">76% completion rate</span>
+      <span class="kpi-delta delta-up">↑ Strong</span>
+    </div>
+  </div>
+
+  <div id="appm-tile-3" class="kpi kpi-teal">
+    <div class="kpi-label">Q1 Completed</div>
+    <div class="kpi-value">10</div>
+    <div class="kpi-footer">
+      <span class="kpi-sub">30% completion rate</span>
+      <span class="kpi-delta delta-neu">In flight</span>
+    </div>
+  </div>
+
+  <div id="appm-tile-4" class="kpi kpi-amber">
+    <div class="kpi-label">Q1 Active / In-Flight</div>
+    <div class="kpi-value">23</div>
+    <div class="kpi-footer">
+      <span class="kpi-sub">Open · Dev · In QA</span>
+    </div>
+  </div>
+
+  <div id="appm-tile-5" class="kpi kpi-red">
+    <div class="kpi-label">Canceled (Q4+Q1)</div>
+    <div class="kpi-value">1</div>
+    <div class="kpi-footer">
+      <span class="kpi-sub">Q4 only · 1.4% rate</span>
+      <span class="kpi-delta delta-up">↓ Low</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- APPM Trend + Status -->
+<div class="section-label">APPM Volume &amp; Status</div>
+<div id="appm-status-row" class="row-3col" style="margin-bottom:14px;">
+
+  <div class="card" style="grid-column: span 1;">
+    <div class="card-header">
+      <span class="card-title">Monthly APPM Ticket Volume</span>
+      <span class="card-badge" style="color:var(--purple);background:var(--purple-dim);border-color:rgba(129,140,248,0.2);">OCT '25 – MAR '26</span>
+    </div>
+    <canvas id="appmTrendChart"></canvas>
+  </div>
+
+  <div id="appm-q4-status" class="card">
+    <div class="card-header">
+      <span class="card-title">Q4 2025 Status</span>
+      <span class="card-badge" style="color:var(--q4-color);background:rgba(129,140,248,0.1);border-color:rgba(129,140,248,0.2);">41 TICKETS</span>
+    </div>
+    <canvas id="appmDonut" style="max-height:130px;"></canvas>
+    <div class="status-list">
+      <div class="status-row"><div class="status-name">Completed</div><div class="sbar-wrap"><div class="sbar-fill" style="width:76%;background:#34d399;"></div></div><div class="status-count">31</div></div>
+      <div class="status-row"><div class="status-name">Open</div><div class="sbar-wrap"><div class="sbar-fill" style="width:10%;background:#38bdf8;"></div></div><div class="status-count">4</div></div>
+      <div class="status-row"><div class="status-name">In QA</div><div class="sbar-wrap"><div class="sbar-fill" style="width:5%;background:#fbbf24;"></div></div><div class="status-count">2</div></div>
+      <div class="status-row"><div class="status-name">Biz. Validation</div><div class="sbar-wrap"><div class="sbar-fill" style="width:2%;background:#818cf8;"></div></div><div class="status-count">1</div></div>
+      <div class="status-row"><div class="status-name">Ready to Deploy</div><div class="sbar-wrap"><div class="sbar-fill" style="width:2%;background:#2dd4bf;"></div></div><div class="status-count">1</div></div>
+      <div class="status-row"><div class="status-name">Pending</div><div class="sbar-wrap"><div class="sbar-fill" style="width:2%;background:#64748b;"></div></div><div class="status-count">1</div></div>
+      <div class="status-row"><div class="status-name">Canceled</div><div class="sbar-wrap"><div class="sbar-fill" style="width:2%;background:#f87171;"></div></div><div class="status-count">1</div></div>
+    </div>
+    <div class="meter-section">
+      <div class="meter-label">Q4 Completion Rate</div>
+      <div class="meter-row"><div class="meter-track"><div class="meter-fill" style="width:76%;"></div></div><span class="meter-pct">76%</span></div>
+    </div>
+  </div>
+
+  <div id="appm-q1-status" class="card">
+    <div class="card-header">
+      <span class="card-title">Q1 2026 Status</span>
+      <span class="card-badge" style="color:var(--q1-color);background:rgba(56,189,248,0.1);border-color:rgba(56,189,248,0.2);">33 TICKETS</span>
+    </div>
+    <canvas id="appmDonutQ1" style="max-height:130px;"></canvas>
+    <div class="status-list">
+      <div class="status-row"><div class="status-name">Open</div><div class="sbar-wrap"><div class="sbar-fill" style="width:39%;background:#38bdf8;"></div></div><div class="status-count">13</div></div>
+      <div class="status-row"><div class="status-name">Completed</div><div class="sbar-wrap"><div class="sbar-fill" style="width:30%;background:#34d399;"></div></div><div class="status-count">10</div></div>
+      <div class="status-row"><div class="status-name">In Progress (Dev)</div><div class="sbar-wrap"><div class="sbar-fill" style="width:12%;background:#a5b4fc;"></div></div><div class="status-count">4</div></div>
+      <div class="status-row"><div class="status-name">In QA</div><div class="sbar-wrap"><div class="sbar-fill" style="width:9%;background:#fbbf24;"></div></div><div class="status-count">3</div></div>
+      <div class="status-row"><div class="status-name">Biz. Validation</div><div class="sbar-wrap"><div class="sbar-fill" style="width:6%;background:#818cf8;"></div></div><div class="status-count">2</div></div>
+      <div class="status-row"><div class="status-name">Awaiting Customer</div><div class="sbar-wrap"><div class="sbar-fill" style="width:3%;background:#7dd3fc;"></div></div><div class="status-count">1</div></div>
+    </div>
+    <div class="meter-section">
+      <div class="meter-label">Q1 Completion Rate</div>
+      <div class="meter-row"><div class="meter-track"><div class="meter-fill" style="width:30%;background:linear-gradient(90deg,#0284c7,#38bdf8);"></div></div><span class="meter-pct" style="color:var(--cyan);">30%</span></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- APPM Ticket Tables -->
+<div class="section-label">APPM Ticket Detail</div>
+<div id="appm-tables-row" class="row-2col" style="margin-bottom:0;">
+<div id="appm-q4-table" class="card" style="margin-bottom:0;">
+  <div class="card-header">
+    <span class="card-title">APPM Tickets — PEREI Line of Business · Q4 2025</span>
+    <span class="card-badge" style="color:var(--purple);background:var(--purple-dim);border-color:rgba(129,140,248,0.2);">41 TICKETS</span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>APPM Key</th>
+          <th>Created</th>
+          <th>Status</th>
+          <th>Summary</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="td-appm">APPM-3893</td><td style="color:var(--text3);font-size:11px;">Oct 01</td><td><span class="chip chip-completed">Completed</span></td><td>Create a view and a table in documentautomation-prd database</td></tr>
+        <tr><td class="td-appm">APPM-3894</td><td style="color:var(--text3);font-size:11px;">Oct 01</td><td><span class="chip chip-completed">Completed</span></td><td>Create a scheduled job to populate the data in the database</td></tr>
+        <tr><td class="td-appm">APPM-3899</td><td style="color:var(--text3);font-size:11px;">Oct 06</td><td><span class="chip chip-completed">Completed</span></td><td>pvm-db02 update gcm-chef</td></tr>
+        <tr><td class="td-appm">APPM-3900</td><td style="color:var(--text3);font-size:11px;">Oct 07</td><td><span class="chip chip-completed">Completed</span></td><td>Approved RDM Allocation new deal/fund update</td></tr>
+        <tr><td class="td-appm">APPM-3916</td><td style="color:var(--text3);font-size:11px;">Oct 09</td><td><span class="chip chip-bizval">Biz. Validation</span></td><td>Investor Portal Sync Clean up - Only Active Portfolio and Investor data Transfer</td></tr>
+        <tr><td class="td-appm">APPM-3919</td><td style="color:var(--text3);font-size:11px;">Oct 09</td><td><span class="chip chip-completed">Completed</span></td><td>pvm-db01</td></tr>
+        <tr><td class="td-appm">APPM-3920</td><td style="color:var(--text3);font-size:11px;">Oct 10</td><td><span class="chip chip-completed">Completed</span></td><td>pvm-db05</td></tr>
+        <tr><td class="td-appm">APPM-3922</td><td style="color:var(--text3);font-size:11px;">Oct 10</td><td><span class="chip chip-completed">Completed</span></td><td>pvm-ssis</td></tr>
+        <tr><td class="td-appm">APPM-3926</td><td style="color:var(--text3);font-size:11px;">Oct 10</td><td><span class="chip chip-completed">Completed</span></td><td>pvm-app</td></tr>
+        <tr><td class="td-appm">APPM-3936</td><td style="color:var(--text3);font-size:11px;">Oct 10</td><td><span class="chip chip-completed">Completed</span></td><td>Akeyless USC Deprovisioning - PEREI Apps</td></tr>
+        <tr><td class="td-appm">APPM-3942</td><td style="color:var(--text3);font-size:11px;">Oct 10</td><td><span class="chip chip-completed">Completed</span></td><td>Update Packages for Multiple Repos - Gcm.CanoeIntegration</td></tr>
+        <tr><td class="td-appm">APPM-3943</td><td style="color:var(--text3);font-size:11px;">Oct 10</td><td><span class="chip chip-completed">Completed</span></td><td>Redeployment Only - pvm-investran-app</td></tr>
+        <tr><td class="td-appm">APPM-3944</td><td style="color:var(--text3);font-size:11px;">Oct 10</td><td><span class="chip chip-completed">Completed</span></td><td>Redeployment Only - Gcm.Pvm.Investran.Integration</td></tr>
+        <tr><td class="td-appm">APPM-3945</td><td style="color:var(--text3);font-size:11px;">Oct 10</td><td><span class="chip chip-completed">Completed</span></td><td>Redeployment Only - Gcm.NorthernTrustApiManagement</td></tr>
+        <tr><td class="td-appm">APPM-3946</td><td style="color:var(--text3);font-size:11px;">Oct 10</td><td><span class="chip chip-completed">Completed</span></td><td>Redeployment Only - pvm-investran-web</td></tr>
+        <tr><td class="td-appm">APPM-3948</td><td style="color:var(--text3);font-size:11px;">Oct 14</td><td><span class="chip chip-completed">Completed</span></td><td>Industry in Portfolio Company Details</td></tr>
+        <tr><td class="td-appm">APPM-3949</td><td style="color:var(--text3);font-size:11px;">Oct 16</td><td><span class="chip chip-completed">Completed</span></td><td>Include CGAIF Suffix in CIC Daily Files being sent to Client via FTP - Phase 1</td></tr>
+        <tr><td class="td-appm">APPM-3959</td><td style="color:var(--text3);font-size:11px;">Oct 22</td><td><span class="chip chip-completed">Completed</span></td><td>Add Parent product Designate to FC sync</td></tr>
+        <tr><td class="td-appm">APPM-3960</td><td style="color:var(--text3);font-size:11px;">Oct 22</td><td><span class="chip chip-completed">Completed</span></td><td>Pvm-investran-web - Disable scheduled tasks in cookbook</td></tr>
+        <tr><td class="td-appm">APPM-3962</td><td style="color:var(--text3);font-size:11px;">Oct 23</td><td><span class="chip chip-completed">Completed</span></td><td>LP Admin Cap activity - Update Investran Batch booking</td></tr>
+        <tr><td class="td-appm">APPM-3963</td><td style="color:var(--text3);font-size:11px;">Oct 23</td><td><span class="chip chip-canceled">Canceled</span></td><td>Alert Update for Indexing - Missing Document Group-Product</td></tr>
+        <tr><td class="td-appm">APPM-3967</td><td style="color:var(--text3);font-size:11px;">Oct 28</td><td><span class="chip chip-completed">Completed</span></td><td>LP Admin Cap activity - Update Investran Batch booking - Phase 2</td></tr>
+        <tr><td class="td-appm">APPM-3968</td><td style="color:var(--text3);font-size:11px;">Oct 28</td><td><span class="chip chip-open">Open</span></td><td>LP Admin Cap activity - Update Investran Batch booking - Phase 3</td></tr>
+        <tr><td class="td-appm">APPM-3970</td><td style="color:var(--text3);font-size:11px;">Oct 29</td><td><span class="chip chip-completed">Completed</span></td><td>Doc Automation - Delete Old package Versions</td></tr>
+        <tr><td class="td-appm">APPM-3971</td><td style="color:var(--text3);font-size:11px;">Nov 04</td><td><span class="chip chip-completed">Completed</span></td><td>Create a trigger in document imaging integration to pull the document data</td></tr>
+        <tr><td class="td-appm">APPM-3972</td><td style="color:var(--text3);font-size:11px;">Nov 04</td><td><span class="chip chip-completed">Completed</span></td><td>Create a Support table for Document Types</td></tr>
+        <tr><td class="td-appm">APPM-3975</td><td style="color:var(--text3);font-size:11px;">Nov 07</td><td><span class="chip chip-open">Open</span></td><td>DI - Update Blacklist to Include Update Reports</td></tr>
+        <tr><td class="td-appm">APPM-3976</td><td style="color:var(--text3);font-size:11px;">Nov 07</td><td><span class="chip chip-completed">Completed</span></td><td>DI Integration - Block Indexing of documents with Null Amount</td></tr>
+        <tr><td class="td-appm">APPM-3977</td><td style="color:var(--text3);font-size:11px;">Nov 07</td><td><span class="chip chip-completed">Completed</span></td><td>Investran API | fix to batchpurged in investran api</td></tr>
+        <tr><td class="td-appm">APPM-3985</td><td style="color:var(--text3);font-size:11px;">Nov 11</td><td><span class="chip chip-open">Open</span></td><td>Add Audit Log to cap call/Dist BI report</td></tr>
+        <tr><td class="td-appm">APPM-4001</td><td style="color:var(--text3);font-size:11px;">Nov 11</td><td><span class="chip chip-pending">Pending</span></td><td>FC Purple Portal - Eliminate Session for a new Purple portal User</td></tr>
+        <tr><td class="td-appm">APPM-3989</td><td style="color:var(--text3);font-size:11px;">Nov 13</td><td><span class="chip chip-completed">Completed</span></td><td>Downgrade docautomation non prod to B1 app service plan</td></tr>
+        <tr><td class="td-appm">APPM-3992</td><td style="color:var(--text3);font-size:11px;">Nov 18</td><td><span class="chip chip-completed">Completed</span></td><td>Update Daily PCAP, FS, K1, CC, DN, UR Variance Report (Prod) to remove Sold Investors</td></tr>
+        <tr><td class="td-appm">APPM-3994</td><td style="color:var(--text3);font-size:11px;">Nov 20</td><td><span class="chip chip-inqa">In QA</span></td><td>Modify the RW reports</td></tr>
+        <tr><td class="td-appm">APPM-3995</td><td style="color:var(--text3);font-size:11px;">Nov 20</td><td><span class="chip chip-inqa">In QA</span></td><td>Call the RW reports and run validation between each Log errors, whether validation or program</td></tr>
+        <tr><td class="td-appm">APPM-4007</td><td style="color:var(--text3);font-size:11px;">Dec 03</td><td><span class="chip chip-completed">Completed</span></td><td>DI - Add Cap activity doc type</td></tr>
+        <tr><td class="td-appm">APPM-4017</td><td style="color:var(--text3);font-size:11px;">Dec 17</td><td><span class="chip chip-completed">Completed</span></td><td>Update Internal account details for Joes retirement</td></tr>
+        <tr><td class="td-appm">APPM-4018</td><td style="color:var(--text3);font-size:11px;">Dec 18</td><td><span class="chip chip-rtd">Ready to Deploy</span></td><td>CIC Monthly Report - PCAPs indexed</td></tr>
+        <tr><td class="td-appm">APPM-4019</td><td style="color:var(--text3);font-size:11px;">Dec 18</td><td><span class="chip chip-completed">Completed</span></td><td>Canoe Tax | Surface Canoe mapped values</td></tr>
+        <tr><td class="td-appm">APPM-4024</td><td style="color:var(--text3);font-size:11px;">Dec 22</td><td><span class="chip chip-completed">Completed</span></td><td>Di Indexes Missing attachments</td></tr>
+        <tr><td class="td-appm">APPM-4025</td><td style="color:var(--text3);font-size:11px;">Dec 22</td><td><span class="chip chip-open">Open</span></td><td>Doc Automation - Block Prior Quarter PCAPs batch booking</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Q1 2026 APPM Table -->
+<div id="appm-q1-table" class="card" style="margin-bottom:0;">
+  <div class="card-header">
+    <span class="card-title">APPM Tickets — PEREI Line of Business · Q1 2026</span>
+    <span class="card-badge" style="color:var(--q1-color);background:rgba(56,189,248,0.1);border-color:rgba(56,189,248,0.2);">33 TICKETS</span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>APPM Key</th>
+          <th>Created</th>
+          <th>Status</th>
+          <th>Summary</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="td-appm">APPM-4027</td><td style="color:var(--text3);font-size:11px;">Jan 06</td><td><span class="chip chip-completed">Completed</span></td><td>Missing Allocation in Canoe</td></tr>
+        <tr><td class="td-appm">APPM-4028</td><td style="color:var(--text3);font-size:11px;">Jan 06</td><td><span class="chip chip-completed">Completed</span></td><td>Unfunded Commitment Error - Email Alert</td></tr>
+        <tr><td class="td-appm">APPM-4029</td><td style="color:var(--text3);font-size:11px;">Jan 14</td><td><span class="chip chip-completed">Completed</span></td><td>Discovery - NPS Quarterly Report Rewrite</td></tr>
+        <tr><td class="td-appm">APPM-4030</td><td style="color:var(--text3);font-size:11px;">Jan 14</td><td><span class="chip chip-inprogdev">In Progress (Dev)</span></td><td>New NPS LP Admin Report</td></tr>
+        <tr><td class="td-appm">APPM-4031</td><td style="color:var(--text3);font-size:11px;">Jan 14</td><td><span class="chip chip-completed">Completed</span></td><td>Investor Portal Publish Performance Issue - Optimize Search Parameter</td></tr>
+        <tr><td class="td-appm">APPM-4046</td><td style="color:var(--text3);font-size:11px;">Jan 20</td><td><span class="chip chip-completed">Completed</span></td><td>Add canoe last modified by to GP admin PCAP BI report</td></tr>
+        <tr><td class="td-appm">APPM-4047</td><td style="color:var(--text3);font-size:11px;">Jan 21</td><td><span class="chip chip-completed">Completed</span></td><td>In CanoeIntegration create object of pcapJson and send the object to new function</td></tr>
+        <tr><td class="td-appm">APPM-4048</td><td style="color:var(--text3);font-size:11px;">Jan 21</td><td><span class="chip chip-completed">Completed</span></td><td>Create a function in Documentautomation that reads old pcap Json data from Azure Blob</td></tr>
+        <tr><td class="td-appm">APPM-4049</td><td style="color:var(--text3);font-size:11px;">Jan 27</td><td><span class="chip chip-open">Open</span></td><td>Tax BI report - Add additional columns on doc approval</td></tr>
+        <tr><td class="td-appm">APPM-4050</td><td style="color:var(--text3);font-size:11px;">Jan 28</td><td><span class="chip chip-inqa">In QA</span></td><td>NPS Report Rewrite - Update IFC build process to gather additional data</td></tr>
+        <tr><td class="td-appm">APPM-4051</td><td style="color:var(--text3);font-size:11px;">Jan 28</td><td><span class="chip chip-open">Open</span></td><td>CLONE - Update IFC build process to gather additional data needed for NPS reports</td></tr>
+        <tr><td class="td-appm">APPM-4052</td><td style="color:var(--text3);font-size:11px;">Jan 28</td><td><span class="chip chip-open">Open</span></td><td>NPS Report Rewrite - Create new front end selection screens (Legacy)</td></tr>
+        <tr><td class="td-appm">APPM-4053</td><td style="color:var(--text3);font-size:11px;">Jan 28</td><td><span class="chip chip-open">Open</span></td><td>NPS Report Rewrite - Create new front end selection screens (Purple)</td></tr>
+        <tr><td class="td-appm">APPM-4054</td><td style="color:var(--text3);font-size:11px;">Jan 28</td><td><span class="chip chip-inprogdev">In Progress (Dev)</span></td><td>NPS Report Rewrite - Map out PES changes for new reports and permissions</td></tr>
+        <tr><td class="td-appm">APPM-4056</td><td style="color:var(--text3);font-size:11px;">Jan 29</td><td><span class="chip chip-bizval">Biz. Validation</span></td><td>Auth 0 Implementation - Fund Central Purple Portal</td></tr>
+        <tr><td class="td-appm">APPM-4058</td><td style="color:var(--text3);font-size:11px;">Jan 29</td><td><span class="chip chip-open">Open</span></td><td>NPS Report Rewrite - Clean up the process of handling cash flow reversals</td></tr>
+        <tr><td class="td-appm">APPM-4064</td><td style="color:var(--text3);font-size:11px;">Jan 30</td><td><span class="chip chip-bizval">Biz. Validation</span></td><td>NPS Report Rewrite - Create Process to Import Master File</td></tr>
+        <tr><td class="td-appm">APPM-4065</td><td style="color:var(--text3);font-size:11px;">Jan 30</td><td><span class="chip chip-open">Open</span></td><td>FX Rate Automation For Investran Batch Posting</td></tr>
+        <tr><td class="td-appm">APPM-4066</td><td style="color:var(--text3);font-size:11px;">Jan 30</td><td><span class="chip chip-open">Open</span></td><td>GP admin - Auto Post Canoe Booked batches in Investran</td></tr>
+        <tr><td class="td-appm">APPM-4071</td><td style="color:var(--text3);font-size:11px;">Feb 04</td><td><span class="chip chip-completed">Completed</span></td><td>Investran Integration | Add Logging for Batches Errored out</td></tr>
+        <tr><td class="td-appm">APPM-4078</td><td style="color:var(--text3);font-size:11px;">Feb 12</td><td><span class="chip chip-completed">Completed</span></td><td>Fund Central Purple Portal, CFT ARS, Vistaone - Auth 0 - Access package update</td></tr>
+        <tr><td class="td-appm">APPM-4079</td><td style="color:var(--text3);font-size:11px;">Feb 18</td><td><span class="chip chip-open">Open</span></td><td>Add new columns to the Tax canoe BI report</td></tr>
+        <tr><td class="td-appm">APPM-4080</td><td style="color:var(--text3);font-size:11px;">Feb 18</td><td><span class="chip chip-open">Open</span></td><td>test ticket</td></tr>
+        <tr><td class="td-appm">APPM-4082</td><td style="color:var(--text3);font-size:11px;">Feb 19</td><td><span class="chip chip-open">Open</span></td><td>Update NT Advice creation Logic for Multiple bank accounts</td></tr>
+        <tr><td class="td-appm">APPM-4083</td><td style="color:var(--text3);font-size:11px;">Feb 20</td><td><span class="chip chip-awaiting">Awaiting Customer</span></td><td>Auth 0 - VistaOne - Update Profile drop down to redirect to Profile page</td></tr>
+        <tr><td class="td-appm">APPM-4087</td><td style="color:var(--text3);font-size:11px;">Feb 23</td><td><span class="chip chip-open">Open</span></td><td>Make Korean Holiday doc automation blacklist configurable</td></tr>
+        <tr><td class="td-appm">APPM-4088</td><td style="color:var(--text3);font-size:11px;">Feb 24</td><td><span class="chip chip-inprogdev">In Progress (Dev)</span></td><td>Migrate Dbs to new SQL and Elastic Pool - Doc Automation</td></tr>
+        <tr><td class="td-appm">APPM-4089</td><td style="color:var(--text3);font-size:11px;">Feb 24</td><td><span class="chip chip-inprogdev">In Progress (Dev)</span></td><td>Migrate Dbs to new SQL and Elastic Pool - Doc Imaging Integration</td></tr>
+        <tr><td class="td-appm">APPM-4090</td><td style="color:var(--text3);font-size:11px;">Feb 24</td><td><span class="chip chip-inqa">In QA</span></td><td>Migrate Dbs to new SQL and Elastic Pool - Wire Instructions</td></tr>
+        <tr><td class="td-appm">APPM-4095</td><td style="color:var(--text3);font-size:11px;">Feb 27</td><td><span class="chip chip-open">Open</span></td><td>Add Additional Attributes to Account Management ADS for FX Hedging Program</td></tr>
+        <tr><td class="td-appm">APPM-4096</td><td style="color:var(--text3);font-size:11px;">Feb 27</td><td><span class="chip chip-inqa">In QA</span></td><td>Investor Portal Publish Performance Issue</td></tr>
+        <tr><td class="td-appm">APPM-4101</td><td style="color:var(--text3);font-size:11px;">Mar 06</td><td><span class="chip chip-completed">Completed</span></td><td>Making ProcessPcapTaxInformation only occur on valid documents</td></tr>
+        <tr><td class="td-appm">APPM-4103</td><td style="color:var(--text3);font-size:11px;">Mar 11</td><td><span class="chip chip-open">Open</span></td><td>SPV Capital Activity Automation — Add Document Type Column to SPV Review Report</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<div class="footnote">
+
+  <span>Source: GCM Grosvenor Jira · CAI PEREI Team (BAP/CR) · PEREI Line of Business (APPM)</span>
+  <span>Generated via Claude · March 2026 · Q4 2025 (Oct–Dec) + Q1 2026 (Jan–Mar)</span>
+</div>
+
+<script>
+Chart.defaults.color = '#64748b';
+Chart.defaults.font.family = "'Inter', sans-serif";
+Chart.defaults.font.size = 10;
+
+const grid = 'rgba(45,63,86,0.6)';
+const tick  = '#475569';
+
+// ── QUARTER CONFIG ─────────────────────────────────────
+const QD = {
+  all: {
+    bapTiles: [
+      { cls:'kpi-cyan',   lbl:'Total BAP Tickets',     val:156, sub:'CAI PEREI Solver Group',        delta:'' },
+      { cls:'kpi-purple', lbl:'Q4 2025 BAP',           val:88,  sub:'Oct \u2013 Dec 2025',           delta:'<span class="kpi-delta delta-up">\u2191 High volume</span>' },
+      { cls:'kpi-teal',   lbl:'Q1 2026 BAP',           val:68,  sub:'Jan \u2013 Mar 2026',           delta:'<span class="kpi-delta delta-down">\u2193 23% vs Q4</span>' },
+      { cls:'kpi-amber',  lbl:'BAP Open / Active',     val:5,   sub:'In Progress + Pending',         delta:'' }
+    ],
+    bapTrendLbls: ['Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26'],
+    bapTrendSets: [[32,21,29,27,24,1],[0,0,0,0,1,7],[0,0,0,0,0,4],[0,0,0,0,1,0],[4,1,1,0,0,3]],
+    bapDonutData: [136,8,9,4,1], bapTotal: 156,
+    crFilter: 'all',
+    appmTiles: [
+      { cls:'kpi-purple', lbl:'Q4 2025 APPM',          val:41,  sub:'Oct \u2013 Dec 2025',           delta:'' },
+      { cls:'kpi-cyan',   lbl:'Q1 2026 APPM',          val:33,  sub:'Jan \u2013 Mar 2026',           delta:'<span class="kpi-delta delta-down">\u2193 20% vs Q4</span>' },
+      { cls:'kpi-green',  lbl:'Q4 Completed',          val:31,  sub:'76% completion rate',           delta:'<span class="kpi-delta delta-up">\u2191 Strong</span>' },
+      { cls:'kpi-teal',   lbl:'Q1 Completed',          val:10,  sub:'30% completion rate',           delta:'<span class="kpi-delta delta-neu">In flight</span>' },
+      { cls:'kpi-amber',  lbl:'Q1 Active / In-Flight', val:23,  sub:'Open \u00b7 Dev \u00b7 In QA',  delta:'' },
+      { cls:'kpi-red',    lbl:'Canceled (Q4+Q1)',       val:1,   sub:'Q4 only \u00b7 1.4% rate',     delta:'<span class="kpi-delta delta-up">\u2193 Low</span>' }
+    ],
+    appmTrendLbls: ['Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26'],
+    appmTrendSets: [[21,6,4,7,2,1],[1,2,1,7,5,1],[0,0,0,2,2,0],[0,2,0,1,2,0],[1,0,0,2,0,0],[0,0,1,0,0,0],[0,1,0,0,0,0],[0,0,0,0,1,0],[1,0,0,0,0,0]],
+    showQ4:true, showQ1:true,
+    appmSub:'Q4 2025 + Q1 2026 \u00b7 PEREI Line of Business \u00b7 Oct 2025 \u2013 Mar 2026'
+  },
+  q4: {
+    bapTiles: [
+      { cls:'kpi-cyan',   lbl:'Q4 Total BAP',          val:88,  sub:'Oct \u2013 Dec 2025',           delta:'' },
+      { cls:'kpi-purple', lbl:'Closed',                val:82,  sub:'93% of Q4 tickets',             delta:'<span class="kpi-delta delta-up">\u2191 Strong</span>' },
+      { cls:'kpi-red',    lbl:'Canceled',              val:6,   sub:'6.8% of Q4 tickets',            delta:'' },
+      { cls:'kpi-green',  lbl:'BAP Open / Active',     val:0,   sub:'All resolved',                  delta:'<span class="kpi-delta delta-up">\u2191 Complete</span>' }
+    ],
+    bapTrendLbls: ['Oct 25','Nov 25','Dec 25'],
+    bapTrendSets: [[32,21,29],[0,0,0],[0,0,0],[0,0,0],[4,1,1]],
+    bapDonutData: [82,0,6,0,0], bapTotal: 88,
+    crFilter: 'q4',
+    appmTiles: [
+      { cls:'kpi-purple', lbl:'Q4 Total APPM',         val:41,  sub:'Oct \u2013 Dec 2025',           delta:'' },
+      { cls:'kpi-green',  lbl:'Completed',             val:31,  sub:'76% completion rate',           delta:'<span class="kpi-delta delta-up">\u2191 Strong</span>' },
+      { cls:'kpi-amber',  lbl:'Active / In-Flight',    val:9,   sub:'Open \u00b7 In QA \u00b7 Pending', delta:'' },
+      { cls:'kpi-red',    lbl:'Canceled',              val:1,   sub:'2.4% cancellation rate',        delta:'<span class="kpi-delta delta-up">\u2193 Low</span>' },
+      { cls:'kpi-teal',   lbl:'Oct Peak Volume',       val:24,  sub:'58% of Q4 tickets',             delta:'<span class="kpi-delta delta-down">\u2193 Tapered</span>' },
+      { cls:'kpi-cyan',   lbl:'Completion Rate',       val:'76%', sub:'31 of 41 completed',          delta:'' }
+    ],
+    appmTrendLbls: ['Oct 25','Nov 25','Dec 25'],
+    appmTrendSets: [[21,6,4],[1,2,1],[0,0,0],[0,2,0],[1,0,0],[0,0,1],[0,1,0],[0,0,0],[1,0,0]],
+    showQ4:true, showQ1:false,
+    appmSub:'Q4 2025 \u00b7 PEREI Line of Business \u00b7 Oct \u2013 Dec 2025'
+  },
+  q1: {
+    bapTiles: [
+      { cls:'kpi-cyan',   lbl:'Q1 Total BAP',          val:68,  sub:'Jan \u2013 Mar 2026',           delta:'' },
+      { cls:'kpi-teal',   lbl:'Closed',                val:52,  sub:'76% of Q1 tickets',             delta:'' },
+      { cls:'kpi-green',  lbl:'Resolved',              val:8,   sub:'12% of Q1 tickets',             delta:'' },
+      { cls:'kpi-amber',  lbl:'BAP Open / Active',     val:5,   sub:'In Progress + Pending',         delta:'' }
+    ],
+    bapTrendLbls: ['Jan 26','Feb 26','Mar 26'],
+    bapTrendSets: [[27,24,1],[0,1,7],[0,0,4],[0,1,0],[0,0,3]],
+    bapDonutData: [52,8,3,4,1], bapTotal: 68,
+    crFilter: 'q1',
+    appmTiles: [
+      { cls:'kpi-cyan',   lbl:'Q1 Total APPM',         val:33,  sub:'Jan \u2013 Mar 2026',           delta:'' },
+      { cls:'kpi-green',  lbl:'Completed',             val:10,  sub:'30% completion rate',           delta:'<span class="kpi-delta delta-neu">In flight</span>' },
+      { cls:'kpi-amber',  lbl:'Active / In-Flight',    val:23,  sub:'Open \u00b7 Dev \u00b7 In QA',  delta:'' },
+      { cls:'kpi-teal',   lbl:'In Progress (Dev)',     val:4,   sub:'Active development',            delta:'' },
+      { cls:'kpi-purple', lbl:'In QA',                 val:3,   sub:'Testing phase',                 delta:'' },
+      { cls:'kpi-red',    lbl:'Canceled',              val:0,   sub:'No cancellations',              delta:'<span class="kpi-delta delta-up">\u2191 Clean</span>' }
+    ],
+    appmTrendLbls: ['Jan 26','Feb 26','Mar 26'],
+    appmTrendSets: [[7,2,1],[7,5,1],[2,2,0],[1,2,0],[2,0,0],[0,0,0],[0,0,0],[0,1,0],[0,0,0]],
+    showQ4:false, showQ1:true,
+    appmSub:'Q1 2026 \u00b7 PEREI Line of Business \u00b7 Jan \u2013 Mar 2026'
+  }
+};
+
+// ── CHART STORE ────────────────────────────────────────
+const C = {};
+
+// ── APPLY QUARTER ──────────────────────────────────────
+function applyQuarter(q) {
+  const d = QD[q];
+
+  // BAP KPI tiles
+  for (let i = 0; i < 4; i++) {
+    const el = document.getElementById('bap-tile-' + i);
+    const t = d.bapTiles[i];
+    el.className = 'kpi ' + t.cls;
+    el.innerHTML = `<div class="kpi-label">${t.lbl}</div><div class="kpi-value">${t.val}</div><div class="kpi-footer"><span class="kpi-sub">${t.sub}</span>${t.delta}</div>`;
+  }
+
+  // BAP trend chart
+  C.trend.data.labels = d.bapTrendLbls;
+  C.trend.data.datasets.forEach((ds, i) => { ds.data = d.bapTrendSets[i]; });
+  C.trend.update();
+
+  // BAP donut
+  C.bapDonut.data.datasets[0].data = d.bapDonutData;
+  C.bapDonut.options.plugins.tooltip.callbacks.label = ctx => ` ${ctx.label}: ${ctx.parsed} (${Math.round(ctx.parsed / d.bapTotal * 100)}%)`;
+  C.bapDonut.update();
+
+  // CR table filter
+  document.querySelectorAll('#crTableBody tr').forEach(row => {
+    row.style.display = (q === 'all' || row.dataset.quarter === q) ? '' : 'none';
+  });
+
+  // APPM section subtitle + period pills
+  document.getElementById('appm-section-sub').textContent = d.appmSub;
+  document.getElementById('appm-pill-q4').style.display = (q === 'q1') ? 'none' : '';
+  document.getElementById('appm-pill-sep').style.display = (q !== 'all') ? 'none' : '';
+  document.getElementById('appm-pill-q1').style.display = (q === 'q4') ? 'none' : '';
+
+  // APPM KPI tiles
+  for (let i = 0; i < 6; i++) {
+    const el = document.getElementById('appm-tile-' + i);
+    const t = d.appmTiles[i];
+    el.className = 'kpi ' + t.cls;
+    el.innerHTML = `<div class="kpi-label">${t.lbl}</div><div class="kpi-value">${t.val}</div><div class="kpi-footer"><span class="kpi-sub">${t.sub}</span>${t.delta}</div>`;
+  }
+
+  // APPM trend chart
+  C.appmTrend.data.labels = d.appmTrendLbls;
+  C.appmTrend.data.datasets.forEach((ds, i) => { ds.data = d.appmTrendSets[i]; });
+  C.appmTrend.update();
+
+  // Show/hide Q4 vs Q1 status cards + tables
+  const q4s = document.getElementById('appm-q4-status');
+  const q1s = document.getElementById('appm-q1-status');
+  const q4t = document.getElementById('appm-q4-table');
+  const q1t = document.getElementById('appm-q1-table');
+  const sRow = document.getElementById('appm-status-row');
+  const tRow = document.getElementById('appm-tables-row');
+
+  q4s.style.display = d.showQ4 ? '' : 'none';
+  q1s.style.display = d.showQ1 ? '' : 'none';
+  q4t.style.display = d.showQ4 ? '' : 'none';
+  q1t.style.display = d.showQ1 ? '' : 'none';
+
+  // Adjust grid when only one panel is visible
+  sRow.style.gridTemplateColumns = (d.showQ4 && d.showQ1) ? '' : '3fr 2fr';
+  tRow.style.gridTemplateColumns = (d.showQ4 && d.showQ1) ? '' : '1fr';
+}
+
+
+// Monthly trend
+C.trend = new Chart(document.getElementById('trendChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26'],
+    datasets: [
+      { label: 'Closed',      data: [32,21,29,27,24,1],  backgroundColor: '#059669', borderRadius: 3, stack: 'a' },
+      { label: 'Resolved',    data: [0,0,0,0,1,7],       backgroundColor: '#34d399', borderRadius: 3, stack: 'a' },
+      { label: 'In Progress', data: [0,0,0,0,0,4],       backgroundColor: '#38bdf8', borderRadius: 3, stack: 'a' },
+      { label: 'Pending',     data: [0,0,0,0,1,0],       backgroundColor: '#64748b', borderRadius: 3, stack: 'a' },
+      { label: 'Canceled',    data: [4,1,1,0,0,3],       backgroundColor: '#f87171', borderRadius: 3, stack: 'a' }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: { boxWidth: 9, padding: 14, color: '#64748b', font: { size: 10 } }
+      }
+    },
+    scales: {
+      x: { grid: { color: grid }, ticks: { color: tick }, stacked: true },
+      y: { grid: { color: grid }, ticks: { color: tick }, stacked: true }
+    }
+  }
+});
+
+// BAP donut
+C.bapDonut = new Chart(document.getElementById('bapDonut'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Closed','Resolved','Canceled','In Progress','Pending'],
+    datasets: [{
+      data: [136, 8, 9, 4, 1],
+      backgroundColor: ['#059669','#34d399','#ef4444','#fbbf24','#475569'],
+      borderColor: '#1e293b',
+      borderWidth: 2,
+      hoverBorderColor: '#2d3f56'
+    }]
+  },
+  options: {
+    responsive: true,
+    cutout: '72%',
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => ` ${ctx.label}: ${ctx.parsed} (${Math.round(ctx.parsed/156*100)}%)`
+        }
+      }
+    }
+  }
+});
+
+// CR donut
+new Chart(document.getElementById('crDonut'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Closed','Scheduled','Canceled'],
+    datasets: [{
+      data: [11, 2, 2],
+      backgroundColor: ['#059669','#fbbf24','#ef4444'],
+      borderColor: '#1e293b',
+      borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true,
+    cutout: '72%',
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => ` ${ctx.label}: ${ctx.parsed} (${Math.round(ctx.parsed/15*100)}%)`
+        }
+      }
+    }
+  }
+});
+
+// APPM Monthly trend (Q4 2025 + Q1 2026)
+C.appmTrend = new Chart(document.getElementById('appmTrendChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26'],
+    datasets: [
+      { label: 'Completed',        data: [21,6,4,7,2,1],  backgroundColor: '#059669', borderRadius: 3, stack: 'a' },
+      { label: 'Open',             data: [1,2,1,7,5,1],   backgroundColor: '#38bdf8', borderRadius: 3, stack: 'a' },
+      { label: 'In Progress (Dev)',data: [0,0,0,2,2,0],   backgroundColor: '#a5b4fc', borderRadius: 3, stack: 'a' },
+      { label: 'In QA',            data: [0,2,0,1,2,0],   backgroundColor: '#fbbf24', borderRadius: 3, stack: 'a' },
+      { label: 'Biz. Validation',  data: [1,0,0,2,0,0],   backgroundColor: '#818cf8', borderRadius: 3, stack: 'a' },
+      { label: 'Ready to Deploy',  data: [0,0,1,0,0,0],   backgroundColor: '#2dd4bf', borderRadius: 3, stack: 'a' },
+      { label: 'Pending',          data: [0,1,0,0,0,0],   backgroundColor: '#64748b', borderRadius: 3, stack: 'a' },
+      { label: 'Awaiting Customer',data: [0,0,0,0,1,0],   backgroundColor: '#7dd3fc', borderRadius: 3, stack: 'a' },
+      { label: 'Canceled',         data: [1,0,0,0,0,0],   backgroundColor: '#f87171', borderRadius: 3, stack: 'a' }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+      legend: { position: 'bottom', labels: { boxWidth: 9, padding: 10, color: '#64748b', font: { size: 9 } } }
+    },
+    scales: {
+      x: { grid: { color: grid }, ticks: { color: tick }, stacked: true },
+      y: { grid: { color: grid }, ticks: { color: tick }, stacked: true }
+    }
+  }
+});
+
+// APPM Q4 status donut
+new Chart(document.getElementById('appmDonut'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Completed','Open','In QA','Biz. Validation','Ready to Deploy','Pending','Canceled'],
+    datasets: [{
+      data: [31,4,2,1,1,1,1],
+      backgroundColor: ['#059669','#38bdf8','#fbbf24','#818cf8','#2dd4bf','#64748b','#ef4444'],
+      borderColor: '#1e293b', borderWidth: 2, hoverBorderColor: '#2d3f56'
+    }]
+  },
+  options: {
+    responsive: true, cutout: '72%',
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed} (${Math.round(ctx.parsed/41*100)}%)` } } }
+  }
+});
+
+// APPM Q1 status donut
+new Chart(document.getElementById('appmDonutQ1'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Open','Completed','In Progress (Dev)','In QA','Biz. Validation','Awaiting Customer'],
+    datasets: [{
+      data: [13,10,4,3,2,1],
+      backgroundColor: ['#38bdf8','#059669','#a5b4fc','#fbbf24','#818cf8','#7dd3fc'],
+      borderColor: '#1e293b', borderWidth: 2, hoverBorderColor: '#2d3f56'
+    }]
+  },
+  options: {
+    responsive: true, cutout: '72%',
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed} (${Math.round(ctx.parsed/33*100)}%)` } } }
+  }
+});
+
+// CR quarter bar
+new Chart(document.getElementById('crQuarterBar'), {
+  type: 'bar',
+  data: {
+    labels: ['Q4 2025', 'Q1 2026'],
+    datasets: [
+      { label: 'Closed',    data: [3,8],  backgroundColor: '#059669', borderRadius: 4, stack: 'a' },
+      { label: 'Scheduled', data: [1,1],  backgroundColor: '#fbbf24', borderRadius: 4, stack: 'a' },
+      { label: 'Canceled',  data: [1,1],  backgroundColor: '#ef4444', borderRadius: 4, stack: 'a' }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: { boxWidth: 9, padding: 12, color: '#64748b', font: { size: 10 } }
+      }
+    },
+    scales: {
+      x: { grid: { color: grid }, ticks: { color: tick } },
+      y: { grid: { color: grid }, ticks: { color: tick, stepSize: 2 }, stacked: true }
+    }
+  }
+});
+</script>
+</body>
+</html>
