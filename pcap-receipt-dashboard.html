@@ -24,6 +24,7 @@
     --blue: #60a5fa;
     --purple: #a78bfa;
     --orange: #fb923c;
+    --teal: #2dd4bf;
   }
   body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
@@ -39,17 +40,14 @@
   .header-left { display: flex; align-items: center; gap: 16px; }
   .header-icon {
     width: 40px; height: 40px; background: linear-gradient(135deg, var(--cyan), var(--blue));
-    border-radius: 10px; display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
+    border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px;
   }
   .header-title { font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--text); }
   .header-sub { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
   .period-pills { display: flex; gap: 8px; align-items: center; }
-  .period-pill {
-    padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; border: 1px solid;
-  }
-  .pill-q4 { background: rgba(250,191,36,0.12); color: var(--amber); border-color: rgba(250,191,36,0.3); }
-  .pill-q1 { background: rgba(34,211,238,0.12); color: var(--cyan); border-color: rgba(34,211,238,0.3); }
+  .period-pill { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; border: 1px solid; }
+  .pill-q4  { background: rgba(250,191,36,0.12); color: var(--amber); border-color: rgba(250,191,36,0.3); }
+  .pill-q1  { background: rgba(34,211,238,0.12); color: var(--cyan);  border-color: rgba(34,211,238,0.3); }
   .pill-sep { color: var(--muted); font-size: 0.85rem; }
 
   /* ── Main ── */
@@ -76,15 +74,17 @@
   .chart-title { font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 600; margin-bottom: 18px; color: var(--text); }
   .chart-wrap { position: relative; height: 200px; }
 
-  /* ── Filters ── */
+  /* ── Filters bar ── */
   .filters-bar {
     background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
-    padding: 16px 22px; margin-bottom: 20px;
-    display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+    padding: 14px 22px; margin-bottom: 20px;
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
   }
   .filter-divider { width: 1px; height: 28px; background: var(--border); flex-shrink: 0; }
   .filter-group { display: flex; align-items: center; gap: 10px; }
   .filter-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; font-weight: 600; white-space: nowrap; }
+
+  /* Search */
   .search-input {
     background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
     padding: 7px 12px; color: var(--text); font-size: 0.85rem; font-family: 'Inter', sans-serif;
@@ -92,6 +92,8 @@
   }
   .search-input:focus { border-color: var(--cyan); }
   .search-input::placeholder { color: var(--muted); }
+
+  /* Regular filter buttons */
   .btn-group { display: flex; gap: 4px; }
   .btn-filter {
     padding: 6px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 500; cursor: pointer;
@@ -99,18 +101,55 @@
     transition: all 0.15s; font-family: 'Inter', sans-serif;
   }
   .btn-filter:hover { border-color: var(--cyan); color: var(--text); }
-  .btn-filter.active         { background: rgba(34,211,238,0.15); border-color: var(--cyan);   color: var(--cyan);   }
-  .btn-filter.active-green   { background: rgba(74,222,128,0.15); border-color: var(--green);  color: var(--green);  }
-  .btn-filter.active-red     { background: rgba(248,113,113,0.15);border-color: var(--red);    color: var(--red);    }
-  .btn-filter.active-orange  { background: rgba(251,146,60,0.15); border-color: var(--orange); color: var(--orange); }
-  .lp-admin-btn {
-    padding: 6px 16px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer;
-    border: 1px solid rgba(251,146,60,0.4); background: rgba(251,146,60,0.08); color: var(--orange);
-    transition: all 0.2s; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 6px;
+  .btn-filter.active { background: rgba(34,211,238,0.15); border-color: var(--cyan); color: var(--cyan); }
+
+  /* ── Admin segmented control ── */
+  .admin-seg {
+    display: flex; background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 3px; gap: 2px;
   }
-  .lp-admin-btn:hover { background: rgba(251,146,60,0.16); }
-  .lp-admin-btn.on { background: rgba(251,146,60,0.22); border-color: var(--orange); box-shadow: 0 0 0 2px rgba(251,146,60,0.25); }
-  .lp-admin-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--orange); }
+  .admin-seg-btn {
+    display: flex; align-items: center; gap: 7px;
+    padding: 7px 16px; border-radius: 8px; font-size: 0.82rem; font-weight: 600;
+    cursor: pointer; border: none; background: transparent; color: var(--muted);
+    transition: all 0.18s; font-family: 'Inter', sans-serif; white-space: nowrap;
+    position: relative;
+  }
+  .admin-seg-btn:hover:not(.seg-active) { color: var(--text); background: rgba(255,255,255,0.04); }
+
+  /* All button active */
+  .admin-seg-btn.seg-active.seg-all {
+    background: rgba(34,211,238,0.15); color: var(--cyan);
+    box-shadow: 0 0 0 1px rgba(34,211,238,0.35);
+  }
+  /* LP Admin active */
+  .admin-seg-btn.seg-active.seg-lp {
+    background: rgba(251,146,60,0.18); color: var(--orange);
+    box-shadow: 0 0 0 1px rgba(251,146,60,0.45);
+  }
+  /* GP Admin active */
+  .admin-seg-btn.seg-active.seg-gp {
+    background: rgba(45,212,191,0.18); color: var(--teal);
+    box-shadow: 0 0 0 1px rgba(45,212,191,0.45);
+  }
+
+  .seg-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    transition: all 0.18s;
+  }
+  .seg-all .seg-dot  { background: var(--muted); }
+  .seg-lp .seg-dot   { background: var(--orange); }
+  .seg-gp .seg-dot   { background: var(--teal); }
+  .seg-active.seg-all .seg-dot { background: var(--cyan); }
+
+  .seg-count {
+    font-size: 0.7rem; font-weight: 700; padding: 1px 6px; border-radius: 20px;
+    background: rgba(255,255,255,0.07); color: var(--muted); transition: all 0.18s;
+  }
+  .seg-active.seg-all .seg-count  { background: rgba(34,211,238,0.2);  color: var(--cyan);   }
+  .seg-active.seg-lp .seg-count   { background: rgba(251,146,60,0.2);  color: var(--orange); }
+  .seg-active.seg-gp .seg-count   { background: rgba(45,212,191,0.2);  color: var(--teal);   }
+
   .results-count { margin-left: auto; font-size: 0.8rem; color: var(--muted); }
 
   /* ── Table ── */
@@ -131,10 +170,19 @@
   td { padding: 11px 16px; border-bottom: 1px solid rgba(42,48,64,0.6); vertical-align: middle; }
   tr:last-child td { border-bottom: none; }
   tr:hover td { background: rgba(255,255,255,0.02); }
-  tr.lp-admin-row td:first-child { border-left: 2px solid rgba(251,146,60,0.5); }
+
+  /* LP Admin row accent */
+  tr.row-lp td:first-child { border-left: 2px solid rgba(251,146,60,0.55); }
+  tr.row-lp td:first-child { padding-left: 14px; }
+  /* GP Admin row accent */
+  tr.row-gp td:first-child { border-left: 2px solid rgba(45,212,191,0.45); }
+  tr.row-gp td:first-child { padding-left: 14px; }
+
   .deal-name { font-weight: 500; color: var(--text); }
-  .le-name { color: var(--muted); font-size: 0.8rem; }
-  .lp-admin-le { color: var(--orange) !important; font-weight: 500 !important; }
+  .le-lp  { color: var(--orange) !important; font-weight: 500; }
+  .le-gp  { color: var(--teal)   !important; font-weight: 500; }
+  .le-def { color: var(--muted); font-size: 0.8rem; }
+
   .doc-badge {
     display: inline-block; padding: 3px 9px; border-radius: 6px; font-size: 0.72rem; font-weight: 600;
     background: rgba(167,139,250,0.15); color: var(--purple); border: 1px solid rgba(167,139,250,0.3);
@@ -237,26 +285,40 @@
     <div class="filter-group">
       <span class="filter-label">Doc Type</span>
       <div class="btn-group" id="docTypeGroup">
-        <button class="btn-filter active" data-val="all" onclick="setFilter('docType','all',this)">All</button>
-        <button class="btn-filter" data-val="Account Statement" onclick="setFilter('docType','Account Statement',this)">Account Statement</button>
-        <button class="btn-filter" data-val="Financials" onclick="setFilter('docType','Financials',this)">Financials</button>
+        <button class="btn-filter active" onclick="setFilter('docType','all',this)">All</button>
+        <button class="btn-filter" onclick="setFilter('docType','Account Statement',this)">Account Statement</button>
+        <button class="btn-filter" onclick="setFilter('docType','Financials',this)">Financials</button>
       </div>
     </div>
     <div class="filter-divider"></div>
     <div class="filter-group">
       <span class="filter-label">Q1 Status</span>
       <div class="btn-group" id="statusGroup">
-        <button class="btn-filter active" data-val="all" onclick="setFilter('status','all',this)">All</button>
-        <button class="btn-filter" data-val="Received" onclick="setFilter('status','Received',this)">Received</button>
-        <button class="btn-filter" data-val="Not Received" onclick="setFilter('status','Not Received',this)">Not Received</button>
+        <button class="btn-filter active" onclick="setFilter('status','all',this)">All</button>
+        <button class="btn-filter" onclick="setFilter('status','Received',this)">Received</button>
+        <button class="btn-filter" onclick="setFilter('status','Not Received',this)">Not Received</button>
       </div>
     </div>
     <div class="filter-divider"></div>
     <div class="filter-group">
-      <button class="lp-admin-btn" id="lpAdminBtn" onclick="toggleLpAdmin()">
-        <span class="lp-admin-dot"></span>
-        LP Admin
-      </button>
+      <span class="filter-label">Admin View</span>
+      <div class="admin-seg" id="adminSeg">
+        <button class="admin-seg-btn seg-all seg-active" onclick="setAdmin('all',this)">
+          <span class="seg-dot"></span>
+          All
+          <span class="seg-count" id="cnt-all">2,602</span>
+        </button>
+        <button class="admin-seg-btn seg-lp" onclick="setAdmin('lp',this)">
+          <span class="seg-dot"></span>
+          LP Admin
+          <span class="seg-count" id="cnt-lp"></span>
+        </button>
+        <button class="admin-seg-btn seg-gp" onclick="setAdmin('gp',this)">
+          <span class="seg-dot"></span>
+          GP Admin
+          <span class="seg-count" id="cnt-gp"></span>
+        </button>
+      </div>
     </div>
     <div class="results-count" id="resultsCount"></div>
   </div>
@@ -305,8 +367,8 @@ const acctReceived = RAW.filter(r => r.docType === 'Account Statement' && r.q1 =
 const acctMissing  = RAW.filter(r => r.docType === 'Account Statement' && r.q1 === 'Not Received').length;
 const finReceived  = RAW.filter(r => r.docType === 'Financials' && r.q1 === 'Received').length;
 const finMissing   = RAW.filter(r => r.docType === 'Financials' && r.q1 === 'Not Received').length;
-const acctTotal    = acctReceived + acctMissing;
-const finTotal     = finReceived + finMissing;
+const acctTotal = acctReceived + acctMissing;
+const finTotal  = finReceived  + finMissing;
 
 new Chart(document.getElementById('statusChart').getContext('2d'), {
   type: 'bar',
@@ -332,7 +394,7 @@ new Chart(document.getElementById('compareChart').getContext('2d'), {
   data: {
     labels: ['Account Statement', 'Financials'],
     datasets: [
-      { label: 'Q4 2025 (Baseline)', data: [acctTotal, finTotal],       backgroundColor: 'rgba(250,191,36,0.7)', borderColor: '#fbbf24', borderWidth: 1, borderRadius: 6 },
+      { label: 'Q4 2025 (Baseline)', data: [acctTotal,    finTotal],    backgroundColor: 'rgba(250,191,36,0.7)', borderColor: '#fbbf24', borderWidth: 1, borderRadius: 6 },
       { label: 'Q1 2026 Received',   data: [acctReceived, finReceived], backgroundColor: 'rgba(34,211,238,0.7)', borderColor: '#22d3ee', borderWidth: 1, borderRadius: 6 }
     ]
   },
@@ -348,29 +410,32 @@ new Chart(document.getElementById('compareChart').getContext('2d'), {
 
 // ── State ──
 let filtered = [...RAW];
-let page = 1;
-let pageSize = 50;
-let sortKey = 'deal';
-let sortDir = 1;
-let lpAdminOnly = false;
+let page = 1, pageSize = 50, sortKey = 'deal', sortDir = 1;
+let adminMode = 'all'; // 'all' | 'lp' | 'gp'
 const activeFilters = { docType: 'all', status: 'all' };
 
-// ── LP Admin toggle ──
-function toggleLpAdmin() {
-  lpAdminOnly = !lpAdminOnly;
-  const btn = document.getElementById('lpAdminBtn');
-  btn.classList.toggle('on', lpAdminOnly);
+// Precompute counts for segment badges
+const lpTotal  = RAW.filter(r => LP_ADMIN_IDS.has(r.leId)).length;
+const gpTotal  = RAW.filter(r => !LP_ADMIN_IDS.has(r.leId)).length;
+document.getElementById('cnt-all').textContent = RAW.length.toLocaleString();
+document.getElementById('cnt-lp').textContent  = lpTotal.toLocaleString();
+document.getElementById('cnt-gp').textContent  = gpTotal.toLocaleString();
+
+// ── Admin segmented control ──
+function setAdmin(mode, btn) {
+  adminMode = mode;
+  document.querySelectorAll('#adminSeg .admin-seg-btn').forEach(b => b.classList.remove('seg-active'));
+  btn.classList.add('seg-active');
   page = 1;
   applyFilters();
 }
 
-// ── Filter logic ──
+// ── Other filters ──
 function setFilter(type, val, btn) {
   activeFilters[type] = val;
   const group = type === 'docType' ? 'docTypeGroup' : 'statusGroup';
-  document.querySelectorAll('#' + group + ' .btn-filter').forEach(b => {
-    b.className = 'btn-filter' + (b === btn ? ' active' : '');
-  });
+  document.querySelectorAll('#' + group + ' .btn-filter').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
   page = 1;
   applyFilters();
 }
@@ -381,7 +446,8 @@ function applyFilters() {
   const st = activeFilters.status;
 
   filtered = RAW.filter(r => {
-    if (lpAdminOnly && !LP_ADMIN_IDS.has(r.leId)) return false;
+    if (adminMode === 'lp' && !LP_ADMIN_IDS.has(r.leId)) return false;
+    if (adminMode === 'gp' &&  LP_ADMIN_IDS.has(r.leId)) return false;
     if (search && !r.deal.toLowerCase().includes(search)) return false;
     if (dt !== 'all' && r.docType !== dt) return false;
     if (st !== 'all' && r.q1 !== st) return false;
@@ -399,7 +465,7 @@ function applyFilters() {
 
 function sortTable(key) {
   if (sortKey === key) sortDir *= -1; else { sortKey = key; sortDir = 1; }
-  document.getElementById('sort-deal').textContent = sortKey === 'deal' ? (sortDir === 1 ? ' ↑' : ' ↓') : '';
+  document.getElementById('sort-deal').textContent = sortKey === 'deal' ? (sortDir === 1 ? ' \u2191' : ' \u2193') : '';
   applyFilters();
 }
 
@@ -421,53 +487,51 @@ function render() {
     tbody.innerHTML = '<tr class="empty-row"><td colspan="5">No records match the current filters</td></tr>';
   } else {
     tbody.innerHTML = rows.map(r => {
-      const isLpAdmin = LP_ADMIN_IDS.has(r.leId);
-      const q1Class = r.q1 === 'Received' ? 'pill-received' : 'pill-missing';
-      const leClass = isLpAdmin ? 'le-name lp-admin-le' : 'le-name';
-      const rowClass = isLpAdmin ? ' class="lp-admin-row"' : '';
-      return '<tr' + rowClass + '>' +
+      const isLp = LP_ADMIN_IDS.has(r.leId);
+      const rowCls = isLp ? ' class="row-lp"' : ' class="row-gp"';
+      const leCls  = isLp ? 'le-lp' : 'le-gp';
+      const q1Cls  = r.q1 === 'Received' ? 'pill-received' : 'pill-missing';
+      return '<tr' + rowCls + '>' +
         '<td class="deal-name">' + esc(r.deal) + '</td>' +
-        '<td class="' + leClass + '">' + esc(r.le) + '</td>' +
+        '<td class="' + leCls + '">' + esc(r.le) + '</td>' +
         '<td><span class="doc-badge">' + esc(r.docType) + '</span></td>' +
-        '<td><span class="status-pill pill-received">● Received</span></td>' +
-        '<td><span class="status-pill ' + q1Class + '">● ' + esc(r.q1) + '</span></td>' +
+        '<td><span class="status-pill pill-received">&#9679; Received</span></td>' +
+        '<td><span class="status-pill ' + q1Cls + '">&#9679; ' + esc(r.q1) + '</span></td>' +
         '</tr>';
     }).join('');
   }
 
   document.getElementById('pageInfo').textContent =
     total === 0 ? 'No results' :
-    'Showing ' + (start + 1).toLocaleString() + '–' + end.toLocaleString() + ' of ' + total.toLocaleString();
+    'Showing ' + (start+1).toLocaleString() + '\u2013' + end.toLocaleString() + ' of ' + total.toLocaleString();
 
-  const pageBtns = document.getElementById('pageBtns');
   const btns = [];
-  btns.push('<button class="page-btn" onclick="goPage(' + (page-1) + ')" ' + (page <= 1 ? 'disabled' : '') + '>&#8249; Prev</button>');
+  btns.push('<button class="page-btn" onclick="goPage(' + (page-1) + ')" ' + (page<=1?'disabled':'') + '>&#8249; Prev</button>');
   getPageRange(page, totalPages).forEach(p => {
     if (p === '...') btns.push('<span style="color:var(--muted);padding:0 4px;">&#8230;</span>');
-    else btns.push('<button class="page-btn ' + (p === page ? 'current' : '') + '" onclick="goPage(' + p + ')">' + p + '</button>');
+    else btns.push('<button class="page-btn ' + (p===page?'current':'') + '" onclick="goPage('+p+')">' + p + '</button>');
   });
-  btns.push('<button class="page-btn" onclick="goPage(' + (page+1) + ')" ' + (page >= totalPages ? 'disabled' : '') + '>Next &#8250;</button>');
-  pageBtns.innerHTML = btns.join('');
+  btns.push('<button class="page-btn" onclick="goPage(' + (page+1) + ')" ' + (page>=totalPages?'disabled':'') + '>Next &#8250;</button>');
+  document.getElementById('pageBtns').innerHTML = btns.join('');
 }
 
 function goPage(p) {
-  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
-  if (p < 1 || p > totalPages) return;
+  const tp = Math.max(1, Math.ceil(filtered.length / pageSize));
+  if (p < 1 || p > tp) return;
   page = p; render();
 }
 
 function getPageRange(cur, total) {
-  if (total <= 7) return Array.from({length: total}, (_, i) => i + 1);
-  if (cur <= 4) return [1, 2, 3, 4, 5, '...', total];
-  if (cur >= total - 3) return [1, '...', total-4, total-3, total-2, total-1, total];
-  return [1, '...', cur-1, cur, cur+1, '...', total];
+  if (total <= 7) return Array.from({length: total}, (_, i) => i+1);
+  if (cur <= 4)         return [1,2,3,4,5,'...',total];
+  if (cur >= total - 3) return [1,'...',total-4,total-3,total-2,total-1,total];
+  return [1,'...',cur-1,cur,cur+1,'...',total];
 }
 
 function esc(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// ── Init ──
 applyFilters();
 </script>
 </body>
