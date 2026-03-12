@@ -110,6 +110,14 @@
   }
   .export-btn:hover { background:rgba(74,222,128,.2);border-color:rgba(74,222,128,.6); }
   .export-btn svg { flex-shrink:0; }
+  .clear-btn {
+    display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:9px;
+    background:rgba(251,113,133,.1);border:1px solid rgba(251,113,133,.35);color:#fb7185;
+    font-size:0.81rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;
+    transition:all .18s;white-space:nowrap;
+  }
+  .clear-btn:hover { background:rgba(251,113,133,.2);border-color:rgba(251,113,133,.6); }
+  .clear-btn svg { flex-shrink:0; }
 
   .results-count { font-size:0.8rem;color:var(--muted); }
 
@@ -284,6 +292,12 @@
         </button>
       </div>
     </div>
+    <button class="clear-btn" id="clearColBtn" onclick="clearColFilters()" style="display:none">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+      Clear Column Filters
+    </button>
     <button class="export-btn" onclick="exportExcel()">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
@@ -410,12 +424,21 @@ function setFilter(type,val,btn){
   btn.classList.add('active'); page=1; applyFilters();
 }
 
+function clearColFilters(){
+  ['cs-deal','cs-le','cs-doc'].forEach(id=>{ document.getElementById(id).value=''; });
+  ['cs-q1','cs-fm'].forEach(id=>{ document.getElementById(id).value=''; });
+  document.getElementById('clearColBtn').style.display='none';
+  applyFilters();
+}
+
 function applyFilters(){
   const csDeal = document.getElementById('cs-deal').value.trim().toLowerCase();
   const csLE   = document.getElementById('cs-le').value.trim().toLowerCase();
   const csDoc  = document.getElementById('cs-doc').value.trim().toLowerCase();
   const csQ1   = document.getElementById('cs-q1').value;
   const csFm   = document.getElementById('cs-fm').value;
+  const anyColFilter = csDeal || csLE || csDoc || csQ1 || csFm;
+  document.getElementById('clearColBtn').style.display = anyColFilter ? '' : 'none';
   const dt=activeFilters.docType, st=activeFilters.status, fm=activeFilters.fm;
 
   filtered=RAW.filter(r=>{
