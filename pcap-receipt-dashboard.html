@@ -242,14 +242,6 @@
 
   <!-- Filters -->
   <div class="filters-bar">
-    <div class="filter-group">
-      <span class="filter-label">Deal</span>
-      <input type="text" id="searchDeal" class="search-input" placeholder="Search deal…" oninput="applyFilters()">
-    </div>
-    <div class="filter-group">
-      <span class="filter-label">Legal Entity</span>
-      <input type="text" id="searchLE" class="search-input" placeholder="Search legal entity…" oninput="applyFilters()">
-    </div>
     <div class="filter-divider"></div>
     <div class="filter-group">
       <span class="filter-label">Doc Type</span>
@@ -419,8 +411,6 @@ function setFilter(type,val,btn){
 }
 
 function applyFilters(){
-  const sd  = document.getElementById('searchDeal').value.trim().toLowerCase();
-  const sle = document.getElementById('searchLE').value.trim().toLowerCase();
   const csDeal = document.getElementById('cs-deal').value.trim().toLowerCase();
   const csLE   = document.getElementById('cs-le').value.trim().toLowerCase();
   const csDoc  = document.getElementById('cs-doc').value.trim().toLowerCase();
@@ -431,8 +421,6 @@ function applyFilters(){
   filtered=RAW.filter(r=>{
     if(adminMode==='lp' && !LP_ADMIN_IDS.has(r.leId)) return false;
     if(adminMode==='gp' &&  LP_ADMIN_IDS.has(r.leId)) return false;
-    if(sd   && !r.deal.toLowerCase().includes(sd))    return false;
-    if(sle  && !r.le.toLowerCase().includes(sle))     return false;
     if(csDeal && !r.deal.toLowerCase().includes(csDeal)) return false;
     if(csLE   && !r.le.toLowerCase().includes(csLE))     return false;
     if(csDoc  && !r.docType.toLowerCase().includes(csDoc)) return false;
