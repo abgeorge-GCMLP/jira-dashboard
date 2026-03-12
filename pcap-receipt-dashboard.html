@@ -503,7 +503,7 @@ function render(){
         +'<td><span class="doc-badge">'+docLabel(r.docType)+'</span></td>'
         +'<td><span class="status-pill pill-received">&#9679; Received</span></td>'
         +'<td>'+(r.q4url?'<a href="'+esc(r.q4url)+'" target="_blank" class="canoe-link">'+esc(r.q4id?r.q4id.substring(0,8)+'…':'')+'</a>':'<span class="na-text">N/A</span>')+'</td>'
-        +'<td>'+(r.q4date?'<span class="dt-text">'+esc(r.q4date)+' '+esc(r.q4time||'')+'</span>':'<span class="dt-na">—</span>')+'</td>'
+        +'<td>'+(r.q4date?'<span class="dt-text">'+esc(r.q4date)+' '+esc((r.q4time||'').substring(0,5))+'</span>':'<span class="dt-na">—</span>')+'</td>'
         +'<td><span class="status-pill '+q1Cls+'">&#9679; '+esc(r.q1)+'</span></td>'
         +'<td>'+(r.q1url?'<a href="'+esc(r.q1url)+'" target="_blank" class="canoe-link">'+esc(r.q1id?r.q1id.substring(0,8)+'…':'')+'</a>':'<span class="na-text">N/A</span>')+'</td>'
         +'<td>'+(r.q1date?'<span class="dt-text">'+esc(r.q1date)+' '+esc(r.q1time||'')+'</span>':'<span class="dt-na">—</span>')+'</td>'
