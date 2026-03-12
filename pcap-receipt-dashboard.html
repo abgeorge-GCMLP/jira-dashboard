@@ -40,8 +40,12 @@
   /* Main */
   .main { padding:28px 32px;max-width:1700px;margin:0 auto; }
 
-  /* KPI - 3 tiles */
-  .kpi-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px;max-width:700px; }
+  /* KPI - 6 tiles (LP + GP rows) */
+  .kpi-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px; }
+  .kpi-row-label { grid-column:1/-1;font-size:0.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 2px 0;margin-top:4px;display:flex;align-items:center;gap:6px; }
+  .kpi-row-label:first-child { margin-top:0; }
+  .kpi-row-lp { color:var(--orange); }
+  .kpi-row-gp { color:var(--teal); }
   .kpi-card {
     background:var(--surface);border:1px solid var(--border);border-radius:14px;
     padding:20px 22px;position:relative;overflow:hidden;transition:transform .15s;
@@ -241,21 +245,38 @@
 
 <div class="main">
 
-  <!-- KPIs (3 tiles) -->
+  <!-- KPIs (6 tiles: LP + GP) -->
   <div class="kpi-grid">
+    <div class="kpi-row-label kpi-row-lp">&#9679; LP Admin</div>
     <div class="kpi-card" style="--accent:var(--amber)">
       <div class="kpi-icon">✅</div>
-      <div class="kpi-val">2,602</div>
+      <div class="kpi-val" id="kv-lp-q3">—</div>
       <div class="kpi-label">Q3 2025 Received</div>
     </div>
     <div class="kpi-card" style="--accent:var(--green)">
       <div class="kpi-icon">📬</div>
-      <div class="kpi-val">73</div>
+      <div class="kpi-val" id="kv-lp-q4">—</div>
       <div class="kpi-label">Q4 2025 Received</div>
     </div>
     <div class="kpi-card" style="--accent:var(--red)">
       <div class="kpi-icon">⚠️</div>
-      <div class="kpi-val">2,529</div>
+      <div class="kpi-val" id="kv-lp-miss">—</div>
+      <div class="kpi-label">Q4 2025 Missing</div>
+    </div>
+    <div class="kpi-row-label kpi-row-gp">&#9679; GP Admin</div>
+    <div class="kpi-card" style="--accent:var(--amber)">
+      <div class="kpi-icon">✅</div>
+      <div class="kpi-val" id="kv-gp-q3">—</div>
+      <div class="kpi-label">Q3 2025 Received</div>
+    </div>
+    <div class="kpi-card" style="--accent:var(--green)">
+      <div class="kpi-icon">📬</div>
+      <div class="kpi-val" id="kv-gp-q4">—</div>
+      <div class="kpi-label">Q4 2025 Received</div>
+    </div>
+    <div class="kpi-card" style="--accent:var(--red)">
+      <div class="kpi-icon">⚠️</div>
+      <div class="kpi-val" id="kv-gp-miss">—</div>
       <div class="kpi-label">Q4 2025 Missing</div>
     </div>
   </div>
@@ -473,6 +494,16 @@ new Chart(document.getElementById('compareChart').getContext('2d'),{type:'bar',d
 document.getElementById('cnt-all').textContent = RAW.length.toLocaleString();
 document.getElementById('cnt-lp').textContent  = RAW.filter(r=>LP_ADMIN_IDS.has(r.leId)).length.toLocaleString();
 document.getElementById('cnt-gp').textContent  = RAW.filter(r=>!LP_ADMIN_IDS.has(r.leId)).length.toLocaleString();
+
+// KPI tiles — split by admin type
+const lpRows = RAW.filter(r=> LP_ADMIN_IDS.has(r.leId));
+const gpRows = RAW.filter(r=>!LP_ADMIN_IDS.has(r.leId));
+document.getElementById('kv-lp-q3').textContent   = lpRows.length.toLocaleString();
+document.getElementById('kv-lp-q4').textContent   = lpRows.filter(r=>r.q1==='Received').length.toLocaleString();
+document.getElementById('kv-lp-miss').textContent  = lpRows.filter(r=>r.q1==='Not Received').length.toLocaleString();
+document.getElementById('kv-gp-q3').textContent   = gpRows.length.toLocaleString();
+document.getElementById('kv-gp-q4').textContent   = gpRows.filter(r=>r.q1==='Received').length.toLocaleString();
+document.getElementById('kv-gp-miss').textContent  = gpRows.filter(r=>r.q1==='Not Received').length.toLocaleString();
 
 // State
 let filtered=[...RAW], page=1, pageSize=50, sortKey='deal', sortDir=1, adminMode='all';
