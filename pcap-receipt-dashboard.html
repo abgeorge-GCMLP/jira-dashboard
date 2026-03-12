@@ -73,6 +73,14 @@
   }
   .search-input:focus { border-color:var(--cyan); }
   .search-input::placeholder { color:var(--muted); }
+  .date-input {
+    background:var(--surface2);border:1px solid var(--border);border-radius:8px;
+    padding:6px 10px;color:var(--text);font-size:0.83rem;font-family:'Inter',sans-serif;
+    outline:none;transition:border-color .15s;color-scheme:dark;cursor:pointer;
+  }
+  .date-input:focus { border-color:var(--cyan); }
+  .date-range { display:flex;align-items:center;gap:6px; }
+  .date-range-sep { font-size:0.75rem;color:var(--muted); }
   .btn-group { display:flex;gap:4px; }
   .btn-filter {
     padding:6px 12px;border-radius:8px;font-size:0.79rem;font-weight:500;cursor:pointer;
@@ -281,6 +289,24 @@
     </div>
     <div class="filter-divider"></div>
     <div class="filter-group">
+      <span class="filter-label">Q4 Received</span>
+      <div class="date-range">
+        <input type="date" class="date-input" id="q4DateFrom" onchange="applyFilters()" title="From">
+        <span class="date-range-sep">→</span>
+        <input type="date" class="date-input" id="q4DateTo" onchange="applyFilters()" title="To">
+      </div>
+    </div>
+    <div class="filter-divider"></div>
+    <div class="filter-group">
+      <span class="filter-label">Q1 Received</span>
+      <div class="date-range">
+        <input type="date" class="date-input" id="q1DateFrom" onchange="applyFilters()" title="From">
+        <span class="date-range-sep">→</span>
+        <input type="date" class="date-input" id="q1DateTo" onchange="applyFilters()" title="To">
+      </div>
+    </div>
+    <div class="filter-divider"></div>
+    <div class="filter-group">
       <span class="filter-label">Admin View</span>
       <div class="admin-seg" id="adminSeg">
         <button class="admin-seg-btn seg-all seg-active" onclick="setAdmin('all',this)">
@@ -429,17 +455,22 @@ function setFilter(type,val,btn){
 function clearColFilters(){
   ['cs-deal','cs-le','cs-doc'].forEach(id=>{ document.getElementById(id).value=''; });
   ['cs-q1','cs-fm'].forEach(id=>{ document.getElementById(id).value=''; });
+  ['q4DateFrom','q4DateTo','q1DateFrom','q1DateTo'].forEach(id=>{ document.getElementById(id).value=''; });
   document.getElementById('clearColBtn').style.display='none';
   applyFilters();
 }
 
 function applyFilters(){
-  const csDeal = document.getElementById('cs-deal').value.trim().toLowerCase();
-  const csLE   = document.getElementById('cs-le').value.trim().toLowerCase();
-  const csDoc  = document.getElementById('cs-doc').value.trim().toLowerCase();
-  const csQ1   = document.getElementById('cs-q1').value;
-  const csFm   = document.getElementById('cs-fm').value;
-  const anyColFilter = csDeal || csLE || csDoc || csQ1 || csFm;
+  const csDeal    = document.getElementById('cs-deal').value.trim().toLowerCase();
+  const csLE      = document.getElementById('cs-le').value.trim().toLowerCase();
+  const csDoc     = document.getElementById('cs-doc').value.trim().toLowerCase();
+  const csQ1      = document.getElementById('cs-q1').value;
+  const csFm      = document.getElementById('cs-fm').value;
+  const q4From    = document.getElementById('q4DateFrom').value;
+  const q4To      = document.getElementById('q4DateTo').value;
+  const q1From    = document.getElementById('q1DateFrom').value;
+  const q1To      = document.getElementById('q1DateTo').value;
+  const anyColFilter = csDeal || csLE || csDoc || csQ1 || csFm || q4From || q4To || q1From || q1To;
   document.getElementById('clearColBtn').style.display = anyColFilter ? '' : 'none';
   const dt=activeFilters.docType, st=activeFilters.status, fm=activeFilters.fm;
 
@@ -450,6 +481,10 @@ function applyFilters(){
     if(csLE   && !r.le.toLowerCase().includes(csLE))     return false;
     if(csDoc  && !r.docType.toLowerCase().includes(csDoc)) return false;
     if(csQ1   && r.q1!==csQ1) return false;
+    if(q4From && (!r.q4date || r.q4date < q4From)) return false;
+    if(q4To   && (!r.q4date || r.q4date > q4To))   return false;
+    if(q1From && (!r.q1date || r.q1date < q1From)) return false;
+    if(q1To   && (!r.q1date || r.q1date > q1To))   return false;
     if(dt!=='all' && r.docType!==dt) return false;
     if(st!=='all' && r.q1!==st) return false;
     const fmVal = isFM(r)?'yes':'no';
