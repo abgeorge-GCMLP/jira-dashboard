@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Canoe Doc Automation Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0d0f14; --surface: #161a22; --surface2: #1e2330; --border: #2a3040;
+  --text: #e2e8f0; --muted: #8b97b0;
+  --cyan: #22d3ee; --green: #4ade80; --red: #f87171;
+  --amber: #fbbf24; --blue: #60a5fa; --purple: #a78bfa;
+  --orange: #fb923c; --teal: #2dd4bf; --pink: #f472b6;
+}
+body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+/* Header */
+.header {
+  background:linear-gradient(135deg,#0d0f14,#1a1f2e); border-bottom:1px solid var(--border);
+  padding:20px 32px; display:flex; align-items:center; justify-content:space-between;
+  position:sticky; top:0; z-index:100; backdrop-filter:blur(10px);
+}
+.header-left { display:flex; align-items:center; gap:20px; }
+.header-logo { height:36px;width:auto;display:block;filter:brightness(0) invert(1); }
+.header-divider { width:1px;height:36px;background:var(--border); }
+.header-title { font-family:'Outfit',sans-serif;font-size:1.4rem;font-weight:700; }
+.header-sub { font-size:0.78rem;color:var(--muted);margin-top:2px; }
+.period-pill {
+  padding:5px 14px;border-radius:20px;font-size:0.75rem;font-weight:600;
+  background:rgba(34,211,238,.12);color:var(--cyan);border:1px solid rgba(34,211,238,.3);
+}
+
+/* Main */
+.main { padding:28px 32px;max-width:1700px;margin:0 auto; }
+.section-title { font-family:'Outfit',sans-serif;font-size:1rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;margin-top:28px; }
+
+/* KPI */
+.kpi-grid { display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:28px; }
+.kpi-card {
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:20px 18px;position:relative;overflow:hidden;transition:transform .15s;
+}
+.kpi-card:hover { transform:translateY(-2px); }
+.kpi-card::before { content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent,var(--cyan)); }
+.kpi-icon { font-size:1.2rem;margin-bottom:8px; }
+.kpi-val { font-family:'Outfit',sans-serif;font-size:1.9rem;font-weight:700;line-height:1;margin-bottom:5px;color:var(--accent,var(--cyan)); }
+.kpi-label { font-size:0.73rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:500; }
+.kpi-sub { font-size:0.72rem;color:var(--muted);margin-top:4px; }
+
+/* Charts */
+.charts-row { display:grid;gap:20px;margin-bottom:20px; }
+.charts-row-2 { grid-template-columns:1fr 1fr; }
+.charts-row-3 { grid-template-columns:2fr 1fr; }
+.chart-card { background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px; }
+.chart-title { font-family:'Outfit',sans-serif;font-size:1rem;font-weight:600;margin-bottom:6px; }
+.chart-subtitle { font-size:0.76rem;color:var(--muted);margin-bottom:16px; }
+.chart-wrap { position:relative; }
+.chart-wrap-md  { height:220px; }
+.chart-wrap-sm  { height:200px; }
+.chart-wrap-lg  { height:260px; }
+.chart-wrap-deal { height:460px; }
+
+/* Legend row */
+.legend-row { display:flex;gap:14px;flex-wrap:wrap;margin-top:12px; }
+.legend-item { display:flex;align-items:center;gap:5px;font-size:0.73rem;color:var(--muted); }
+.legend-dot { width:10px;height:10px;border-radius:2px;flex-shrink:0; }
+
+/* Summary table */
+.summary-table { width:100%;border-collapse:collapse;font-size:0.82rem; }
+.summary-table th { text-align:left;padding:9px 14px;font-weight:600;font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border); }
+.summary-table td { padding:10px 14px;border-bottom:1px solid rgba(42,48,64,.6); }
+.summary-table tr:last-child td { border-bottom:none; }
+.summary-table tr:hover td { background:var(--surface2); }
+.badge { display:inline-block;padding:2px 8px;border-radius:8px;font-size:0.71rem;font-weight:600; }
+.badge-ca   { background:rgba(96,165,250,.15);color:var(--blue); }
+.badge-pcap { background:rgba(167,139,250,.15);color:var(--purple); }
+.badge-fs   { background:rgba(45,212,191,.15);color:var(--teal); }
+.progress-bar { background:var(--surface2);border-radius:4px;height:6px;overflow:hidden;width:80px;display:inline-block;vertical-align:middle;margin-left:6px; }
+.progress-fill { height:100%;border-radius:4px;background:var(--green); }
+.progress-fill.amber { background:var(--amber); }
+.progress-fill.blue  { background:var(--blue); }
+.text-right { text-align:right; }
+.text-green { color:var(--green); }
+.text-amber { color:var(--amber); }
+.text-blue  { color:var(--blue); }
+.text-muted { color:var(--muted); }
+
+/* Footer */
+.footer { text-align:center;padding:24px 32px;color:var(--muted);font-size:0.75rem;border-top:1px solid var(--border);margin-top:32px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-left">
+    <img src="data:image/png;base64,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" class="header-logo" alt="GCM Grosvenor">
+    <div class="header-divider"></div>
+    <div>
+      <div class="header-title">Canoe Doc Automation Dashboard</div>
+      <div class="header-sub">Capital Activity · PCAP · Financial Statements — document processing stats</div>
+    </div>
+  </div>
+  <div class="period-pill">Mar 2025 – Mar 2026</div>
+</header>
+
+<div class="main">
+
+  <!-- KPIs -->
+  <div class="kpi-grid">
+    <div class="kpi-card" style="--accent:var(--cyan)">
+      <div class="kpi-icon">📄</div>
+      <div class="kpi-val">76,193</div>
+      <div class="kpi-label">Total Docs</div>
+      <div class="kpi-sub">Last 13 months</div>
+    </div>
+    <div class="kpi-card" style="--accent:var(--green)">
+      <div class="kpi-icon">✅</div>
+      <div class="kpi-val">95.2%</div>
+      <div class="kpi-label">Completion Rate</div>
+      <div class="kpi-sub">72,530 completed</div>
+    </div>
+    <div class="kpi-card" style="--accent:var(--blue)">
+      <div class="kpi-icon">📊</div>
+      <div class="kpi-val">20,152</div>
+      <div class="kpi-label">Capital Activity</div>
+      <div class="kpi-sub">93.9% automatable</div>
+    </div>
+    <div class="kpi-card" style="--accent:var(--purple)">
+      <div class="kpi-icon">📋</div>
+      <div class="kpi-val">29,766</div>
+      <div class="kpi-label">PCAP Docs</div>
+      <div class="kpi-sub">56.1% automatable</div>
+    </div>
+    <div class="kpi-card" style="--accent:var(--teal)">
+      <div class="kpi-icon">📑</div>
+      <div class="kpi-val">26,275</div>
+      <div class="kpi-label">Financial Statements</div>
+      <div class="kpi-sub">99.5% completed</div>
+    </div>
+    <div class="kpi-card" style="--accent:var(--amber)">
+      <div class="kpi-icon">⚡</div>
+      <div class="kpi-val">71.4%</div>
+      <div class="kpi-label">Automatable (CA+PCAP)</div>
+      <div class="kpi-sub">35,635 of 49,918</div>
+    </div>
+  </div>
+
+  <!-- ROW 1: Monthly Volume + CA Types Donut -->
+  <div class="charts-row charts-row-3">
+    <div class="chart-card">
+      <div class="chart-title">Monthly Document Volume</div>
+      <div class="chart-subtitle">Total docs received per month by type</div>
+      <div class="chart-wrap chart-wrap-lg">
+        <canvas id="volumeChart"></canvas>
+      </div>
+      <div class="legend-row">
+        <div class="legend-item"><div class="legend-dot" style="background:#60a5fa"></div>Capital Activity</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#a78bfa"></div>PCAP</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#2dd4bf"></div>Financial Statements</div>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Capital Activity Types</div>
+      <div class="chart-subtitle">Distribution across all 13 months</div>
+      <div class="chart-wrap chart-wrap-lg" style="display:flex;align-items:center;justify-content:center;">
+        <canvas id="caTypeDonut"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 2: Completion Rates + Monthly CA Types Breakdown -->
+  <div class="charts-row charts-row-2">
+    <div class="chart-card">
+      <div class="chart-title">Monthly Completion Rate</div>
+      <div class="chart-subtitle">% of docs completed per month by type</div>
+      <div class="chart-wrap chart-wrap-md">
+        <canvas id="compRateChart"></canvas>
+      </div>
+      <div class="legend-row">
+        <div class="legend-item"><div class="legend-dot" style="background:#60a5fa"></div>Capital Activity</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#a78bfa"></div>PCAP</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#2dd4bf"></div>Financial Statements</div>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">CA Types by Month</div>
+      <div class="chart-subtitle">Capital Call · Distribution · Distribution in Kind</div>
+      <div class="chart-wrap chart-wrap-md">
+        <canvas id="caTypesChart"></canvas>
+      </div>
+      <div class="legend-row">
+        <div class="legend-item"><div class="legend-dot" style="background:#22d3ee"></div>Capital Call</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#4ade80"></div>Distribution</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#fbbf24"></div>Dist. in Kind</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top 20 Deals -->
+  <div class="chart-card" style="margin-bottom:20px">
+    <div class="chart-title">Top 20 Deals by Document Volume</div>
+    <div class="chart-subtitle">Capital Activity · PCAP · Financial Statements — sorted by total</div>
+    <div class="chart-wrap chart-wrap-deal">
+      <canvas id="dealsChart"></canvas>
+    </div>
+    <div class="legend-row" style="margin-top:14px">
+      <div class="legend-item"><div class="legend-dot" style="background:#60a5fa"></div>Capital Activity</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#a78bfa"></div>PCAP</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#2dd4bf"></div>Financial Statements</div>
+    </div>
+  </div>
+
+  <!-- Summary Table -->
+  <div class="chart-card" style="margin-bottom:20px">
+    <div class="chart-title" style="margin-bottom:16px">Document Type Summary</div>
+    <table class="summary-table">
+      <thead>
+        <tr>
+          <th>Doc Type</th>
+          <th class="text-right">Total Docs</th>
+          <th class="text-right">Completed</th>
+          <th class="text-right">Completion Rate</th>
+          <th class="text-right">Automatable</th>
+          <th class="text-right">Auto Rate</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge-ca">Capital Activity</span></td>
+          <td class="text-right">20,152</td>
+          <td class="text-right text-green">19,087</td>
+          <td class="text-right">
+            94.7%
+            <span class="progress-bar"><span class="progress-fill blue" style="width:94.7%"></span></span>
+          </td>
+          <td class="text-right text-blue">18,925</td>
+          <td class="text-right">93.9%
+            <span class="progress-bar"><span class="progress-fill" style="width:93.9%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-pcap">PCAP</span></td>
+          <td class="text-right">29,766</td>
+          <td class="text-right text-green">27,307</td>
+          <td class="text-right">
+            91.7%
+            <span class="progress-bar"><span class="progress-fill blue" style="width:91.7%"></span></span>
+          </td>
+          <td class="text-right text-blue">16,710</td>
+          <td class="text-right">56.1%
+            <span class="progress-bar"><span class="progress-fill amber" style="width:56.1%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-fs">Financial Statements</span></td>
+          <td class="text-right">26,275</td>
+          <td class="text-right text-green">26,136</td>
+          <td class="text-right">
+            99.5%
+            <span class="progress-bar"><span class="progress-fill blue" style="width:99.5%"></span></span>
+          </td>
+          <td class="text-right text-muted">N/A</td>
+          <td class="text-right text-muted">—</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div><!-- .main -->
+
+<footer class="footer">
+  Generated March 12, 2026 · Canoe Doc Automation · Source: documentautomation-prd · Mar 2025 – Mar 2026
+</footer>
+
+<script>
+Chart.defaults.color = '#8b97b0';
+Chart.defaults.borderColor = '#2a3040';
+Chart.defaults.font.family = "'Inter', sans-serif";
+
+const MONTHS = ["Mar '25","Apr '25","May '25","Jun '25","Jul '25","Aug '25","Sep '25","Oct '25","Nov '25","Dec '25","Jan '26","Feb '26","Mar '26"];
+
+// ── Monthly Volume (stacked bar) ──────────────────────────────────────────────
+new Chart(document.getElementById('volumeChart'), {
+  type: 'bar',
+  data: {
+    labels: MONTHS,
+    datasets: [
+      { label:'Capital Activity', data:[1412,1554,1272,1964,1731,1240,1935,1625,1318,2864,1456,1150,631],    backgroundColor:'rgba(96,165,250,0.75)',  stack:'s' },
+      { label:'PCAP',             data:[3106,2103,5202,1727,685,4944,1495,613,4868,1644,396,1547,1436],  backgroundColor:'rgba(167,139,250,0.75)', stack:'s' },
+      { label:'Financial Stmts',  data:[2937,2701,5152,1401,461,4615,1010,379,4327,1038,197,1212,845],    backgroundColor:'rgba(45,212,191,0.65)',  stack:'s' }
+    ]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false}, tooltip:{mode:'index',intersect:false} },
+    scales:{
+      x:{ stacked:true, grid:{color:'rgba(42,48,64,.5)'}, ticks:{font:{size:11}} },
+      y:{ stacked:true, grid:{color:'rgba(42,48,64,.5)'}, ticks:{font:{size:11}} }
+    }
+  }
+});
+
+// ── CA Type Donut ─────────────────────────────────────────────────────────────
+new Chart(document.getElementById('caTypeDonut'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Capital Call','Distribution','Dist. in Kind'],
+    datasets: [{
+      data: [9205, 10880, 67],
+      backgroundColor: ['rgba(34,211,238,0.8)','rgba(74,222,128,0.8)','rgba(251,191,36,0.8)'],
+      borderColor: ['#22d3ee','#4ade80','#fbbf24'],
+      borderWidth: 2,
+      hoverOffset: 8
+    }]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    cutout:'65%',
+    plugins:{
+      legend:{ position:'bottom', labels:{ padding:14, font:{size:12}, color:'#8b97b0' } },
+      tooltip:{
+        callbacks:{
+          label: ctx => {
+            const total = ctx.dataset.data.reduce((a,b)=>a+b,0);
+            return ' ' + ctx.label + ': ' + ctx.parsed.toLocaleString() + ' (' + (ctx.parsed/total*100).toFixed(1) + '%)';
+          }
+        }
+      }
+    }
+  }
+});
+
+// ── Completion Rate Line Chart ─────────────────────────────────────────────────
+new Chart(document.getElementById('compRateChart'), {
+  type: 'line',
+  data: {
+    labels: MONTHS,
+    datasets: [
+      {
+        label:'Capital Activity', data:["98.2","97.2","94.4","95.4","93.1","92.8","94.2","92.8","94.1","95.3","94.8","95.7","90.5"],
+        borderColor:'#60a5fa', backgroundColor:'rgba(96,165,250,0.1)',
+        borderWidth:2, pointRadius:3, tension:0.35, fill:false
+      },
+      {
+        label:'PCAP', data:["92.8","91.7","91.5","92.0","89.6","92.1","91.8","89.4","92.2","93.9","88.1","88.4","91.6"],
+        borderColor:'#a78bfa', backgroundColor:'rgba(167,139,250,0.1)',
+        borderWidth:2, pointRadius:3, tension:0.35, fill:false
+      },
+      {
+        label:'Financial Stmts', data:["99.2","100.0","99.5","99.7","100.0","99.5","98.5","99.7","99.5","99.9","99.5","98.6","99.5"],
+        borderColor:'#2dd4bf', backgroundColor:'rgba(45,212,191,0.1)',
+        borderWidth:2, pointRadius:3, tension:0.35, fill:false
+      }
+    ]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false}, tooltip:{mode:'index',intersect:false} },
+    scales:{
+      x:{ grid:{color:'rgba(42,48,64,.5)'}, ticks:{font:{size:11}} },
+      y:{
+        grid:{color:'rgba(42,48,64,.5)'}, ticks:{font:{size:11},callback:v=>v+'%'},
+        min:80, max:100
+      }
+    }
+  }
+});
+
+// ── CA Types Monthly (stacked bar) ────────────────────────────────────────────
+new Chart(document.getElementById('caTypesChart'), {
+  type: 'bar',
+  data: {
+    labels: MONTHS,
+    datasets: [
+      { label:'Capital Call',      data:[583,761,573,898,785,539,1050,763,557,1169,690,479,358],  backgroundColor:'rgba(34,211,238,0.75)', stack:'s' },
+      { label:'Distribution',      data:[827,793,697,1063,938,690,874,862,757,1688,755,668,268], backgroundColor:'rgba(74,222,128,0.75)', stack:'s' },
+      { label:'Dist. in Kind',     data:[2,0,2,3,8,11,11,0,4,7,11,3,5],          backgroundColor:'rgba(251,191,36,0.75)', stack:'s' }
+    ]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false}, tooltip:{mode:'index',intersect:false} },
+    scales:{
+      x:{ stacked:true, grid:{color:'rgba(42,48,64,.5)'}, ticks:{font:{size:11}} },
+      y:{ stacked:true, grid:{color:'rgba(42,48,64,.5)'}, ticks:{font:{size:11}} }
+    }
+  }
+});
+
+// ── Top 20 Deals (horizontal stacked bar) ─────────────────────────────────────
+new Chart(document.getElementById('dealsChart'), {
+  type: 'bar',
+  data: {
+    labels: ["Peak Rock Capital Fund III LP","Stablewood DevCap 1 Joint Venture, LP","Vista Equity Partners Fund IV, L.P.","Wynnchurch Capital Partners III, L.P.","H.I.G. Middle Market LBO Fund IV, L.P.","DB Aviator Holdings, LLC (Vantage Data Cente…","Vista Foundation Fund I, L.P.","Blackstone Capital Partners V, L.P.","H.I.G. Middle Market LBO Fund III, L.P.","SREI LDC-1, LP","Ethos GP I Venture, LP","Riverside Micro-Cap Fund V, L.P.","Excellere Capital Fund II, L.P.","GCM Grosvenor Co-Investment Opportunities Fu…","DPE Germany IV Feeder Fund (Jersey) LP","KKR Global Infrastructure Investors IV (USD)…","Brasa Real Estate Fund III, LP","OPC Fund I, LP","Genstar Capital Partners IX, L.P.","WPEF VIII Feeder ILP"],
+    datasets: [
+      { label:'Capital Activity', data:[120,192,16,25,51,25,9,13,19,77,73,16,20,8,35,68,27,74,45,45],   backgroundColor:'rgba(96,165,250,0.8)',  stack:'s' },
+      { label:'PCAP',             data:[60,31,45,78,35,26,54,17,27,32,39,43,55,85,43,24,81,29,28,36], backgroundColor:'rgba(167,139,250,0.8)', stack:'s' },
+      { label:'Financial Stmts',  data:[76,27,180,90,91,126,108,130,105,40,35,88,70,49,63,48,32,37,65,56],   backgroundColor:'rgba(45,212,191,0.75)', stack:'s' }
+    ]
+  },
+  options: {
+    indexAxis:'y',
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{
+        mode:'index', intersect:false,
+        callbacks:{
+          afterBody: items => {
+            const total = items.reduce((s,i)=>s+i.parsed.x,0);
+            const completed = [250,249,239,193,177,173,171,142,151,148,142,147,144,135,103,137,135,139,138,111][items[0].dataIndex];
+            return ['──────────────', 'Total: '+total, 'Completed: '+completed+' ('+(completed/total*100).toFixed(0)+'%)'];
+          }
+        }
+      }
+    },
+    scales:{
+      x:{ stacked:true, grid:{color:'rgba(42,48,64,.5)'}, ticks:{font:{size:11}} },
+      y:{ stacked:true, grid:{color:'rgba(42,48,64,.5)'}, ticks:{font:{size:11}} }
+    }
+  }
+});
+</script>
+</body>
+</html>

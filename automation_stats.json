@@ -1,0 +1,626 @@
+{
+  "monthly": [
+    {
+      "DocType": "CapitalActivity",
+      "Month": "2025-03",
+      "Total": "1412",
+      "Completed": "1386",
+      "Automatable": "1300"
+    },
+    {
+      "DocType": "CapitalActivity",
+      "Month": "2025-04",
+      "Total": "1554",
+      "Completed": "1511",
+      "Automatable": "1436"
+    },
+    {
+      "DocType": "CapitalActivity",
+      "Month": "2025-05",
+      "Total": "1272",
+      "Completed": "1201",
+      "Automatable": "1195"
+    },
+    {
+      "DocType": "CapitalActivity",
+      "Month": "2025-06",
+      "Total": "1964",
+      "Completed": "1874",
+      "Automatable": "1789"
+    },
+    {
+      "DocType": "CapitalActivity",
+      "Month": "2025-07",
+      "Total": "1731",
+      "Completed": "1612",
+      "Automatable": "1613"
+    },
+    {
+      "DocType": "CapitalActivity",
+      "Month": "2025-08",
+      "Total": "1240",
+      "Completed": "1151",
+      "Automatable": "1138"
+    },
+    {
+      "DocType": "CapitalActivity",
+      "Month": "2025-09",
+      "Total": "1935",
+      "Completed": "1822",
+      "Automatable": "1842"
+    },
+    {
+      "DocType": "CapitalActivity",
+      "Month": "2025-10",
+      "Total": "1625",
+      "Completed": "1508",
+      "Automatable": "1555"
+    },
+    {
+      "DocType": "CapitalActivity",
+      "Month": "2025-11",
+      "Total": "1318",
+      "Completed": "1240",
+      "Automatable": "1263"
+    },
+    {
+      "DocType": "CapitalActivity",
+      "Month": "2025-12",
+      "Total": "2864",
+      "Completed": "2730",
+      "Automatable": "2738"
+    },
+    {
+      "DocType": "CapitalActivity",
+      "Month": "2026-01",
+      "Total": "1456",
+      "Completed": "1380",
+      "Automatable": "1397"
+    },
+    {
+      "DocType": "CapitalActivity",
+      "Month": "2026-02",
+      "Total": "1150",
+      "Completed": "1101",
+      "Automatable": "1097"
+    },
+    {
+      "DocType": "CapitalActivity",
+      "Month": "2026-03",
+      "Total": "631",
+      "Completed": "571",
+      "Automatable": "562"
+    },
+    {
+      "DocType": "FinancialStatement",
+      "Month": "2025-03",
+      "Total": "2937",
+      "Completed": "2914",
+      "Automatable": "0"
+    },
+    {
+      "DocType": "FinancialStatement",
+      "Month": "2025-04",
+      "Total": "2701",
+      "Completed": "2701",
+      "Automatable": "0"
+    },
+    {
+      "DocType": "FinancialStatement",
+      "Month": "2025-05",
+      "Total": "5152",
+      "Completed": "5126",
+      "Automatable": "0"
+    },
+    {
+      "DocType": "FinancialStatement",
+      "Month": "2025-06",
+      "Total": "1401",
+      "Completed": "1397",
+      "Automatable": "0"
+    },
+    {
+      "DocType": "FinancialStatement",
+      "Month": "2025-07",
+      "Total": "461",
+      "Completed": "461",
+      "Automatable": "0"
+    },
+    {
+      "DocType": "FinancialStatement",
+      "Month": "2025-08",
+      "Total": "4615",
+      "Completed": "4590",
+      "Automatable": "0"
+    },
+    {
+      "DocType": "FinancialStatement",
+      "Month": "2025-09",
+      "Total": "1010",
+      "Completed": "995",
+      "Automatable": "0"
+    },
+    {
+      "DocType": "FinancialStatement",
+      "Month": "2025-10",
+      "Total": "379",
+      "Completed": "378",
+      "Automatable": "0"
+    },
+    {
+      "DocType": "FinancialStatement",
+      "Month": "2025-11",
+      "Total": "4327",
+      "Completed": "4305",
+      "Automatable": "0"
+    },
+    {
+      "DocType": "FinancialStatement",
+      "Month": "2025-12",
+      "Total": "1038",
+      "Completed": "1037",
+      "Automatable": "0"
+    },
+    {
+      "DocType": "FinancialStatement",
+      "Month": "2026-01",
+      "Total": "197",
+      "Completed": "196",
+      "Automatable": "0"
+    },
+    {
+      "DocType": "FinancialStatement",
+      "Month": "2026-02",
+      "Total": "1212",
+      "Completed": "1195",
+      "Automatable": "0"
+    },
+    {
+      "DocType": "FinancialStatement",
+      "Month": "2026-03",
+      "Total": "845",
+      "Completed": "841",
+      "Automatable": "0"
+    },
+    {
+      "DocType": "Pcap",
+      "Month": "2025-03",
+      "Total": "3106",
+      "Completed": "2883",
+      "Automatable": "1488"
+    },
+    {
+      "DocType": "Pcap",
+      "Month": "2025-04",
+      "Total": "2103",
+      "Completed": "1929",
+      "Automatable": "758"
+    },
+    {
+      "DocType": "Pcap",
+      "Month": "2025-05",
+      "Total": "5202",
+      "Completed": "4759",
+      "Automatable": "3142"
+    },
+    {
+      "DocType": "Pcap",
+      "Month": "2025-06",
+      "Total": "1727",
+      "Completed": "1588",
+      "Automatable": "779"
+    },
+    {
+      "DocType": "Pcap",
+      "Month": "2025-07",
+      "Total": "685",
+      "Completed": "614",
+      "Automatable": "339"
+    },
+    {
+      "DocType": "Pcap",
+      "Month": "2025-08",
+      "Total": "4944",
+      "Completed": "4552",
+      "Automatable": "3231"
+    },
+    {
+      "DocType": "Pcap",
+      "Month": "2025-09",
+      "Total": "1495",
+      "Completed": "1373",
+      "Automatable": "763"
+    },
+    {
+      "DocType": "Pcap",
+      "Month": "2025-10",
+      "Total": "613",
+      "Completed": "548",
+      "Automatable": "314"
+    },
+    {
+      "DocType": "Pcap",
+      "Month": "2025-11",
+      "Total": "4868",
+      "Completed": "4486",
+      "Automatable": "3254"
+    },
+    {
+      "DocType": "Pcap",
+      "Month": "2025-12",
+      "Total": "1644",
+      "Completed": "1543",
+      "Automatable": "803"
+    },
+    {
+      "DocType": "Pcap",
+      "Month": "2026-01",
+      "Total": "396",
+      "Completed": "349",
+      "Automatable": "156"
+    },
+    {
+      "DocType": "Pcap",
+      "Month": "2026-02",
+      "Total": "1547",
+      "Completed": "1367",
+      "Automatable": "930"
+    },
+    {
+      "DocType": "Pcap",
+      "Month": "2026-03",
+      "Total": "1436",
+      "Completed": "1316",
+      "Automatable": "753"
+    }
+  ],
+  "deals": [
+    {
+      "DealName": "Peak Rock Capital Fund III LP",
+      "CA": "120",
+      "PCAP": "60",
+      "FS": "76",
+      "Total": "256",
+      "Completed": "250"
+    },
+    {
+      "DealName": "Stablewood DevCap 1 Joint Venture, LP",
+      "CA": "192",
+      "PCAP": "31",
+      "FS": "27",
+      "Total": "250",
+      "Completed": "249"
+    },
+    {
+      "DealName": "Vista Equity Partners Fund IV, L.P.",
+      "CA": "16",
+      "PCAP": "45",
+      "FS": "180",
+      "Total": "241",
+      "Completed": "239"
+    },
+    {
+      "DealName": "Wynnchurch Capital Partners III, L.P.",
+      "CA": "25",
+      "PCAP": "78",
+      "FS": "90",
+      "Total": "193",
+      "Completed": "193"
+    },
+    {
+      "DealName": "H.I.G. Middle Market LBO Fund IV, L.P.",
+      "CA": "51",
+      "PCAP": "35",
+      "FS": "91",
+      "Total": "177",
+      "Completed": "177"
+    },
+    {
+      "DealName": "DB Aviator Holdings, LLC (Vantage Data Centers, LLC)",
+      "CA": "25",
+      "PCAP": "26",
+      "FS": "126",
+      "Total": "177",
+      "Completed": "173"
+    },
+    {
+      "DealName": "Vista Foundation Fund I, L.P.",
+      "CA": "9",
+      "PCAP": "54",
+      "FS": "108",
+      "Total": "171",
+      "Completed": "171"
+    },
+    {
+      "DealName": "Blackstone Capital Partners V, L.P.",
+      "CA": "13",
+      "PCAP": "17",
+      "FS": "130",
+      "Total": "160",
+      "Completed": "142"
+    },
+    {
+      "DealName": "H.I.G. Middle Market LBO Fund III, L.P.",
+      "CA": "19",
+      "PCAP": "27",
+      "FS": "105",
+      "Total": "151",
+      "Completed": "151"
+    },
+    {
+      "DealName": "SREI LDC-1, LP",
+      "CA": "77",
+      "PCAP": "32",
+      "FS": "40",
+      "Total": "149",
+      "Completed": "148"
+    },
+    {
+      "DealName": "Ethos GP I Venture, LP",
+      "CA": "73",
+      "PCAP": "39",
+      "FS": "35",
+      "Total": "147",
+      "Completed": "142"
+    },
+    {
+      "DealName": "Riverside Micro-Cap Fund V, L.P.",
+      "CA": "16",
+      "PCAP": "43",
+      "FS": "88",
+      "Total": "147",
+      "Completed": "147"
+    },
+    {
+      "DealName": "Excellere Capital Fund II, L.P.",
+      "CA": "20",
+      "PCAP": "55",
+      "FS": "70",
+      "Total": "145",
+      "Completed": "144"
+    },
+    {
+      "DealName": "GCM Grosvenor Co-Investment Opportunities Fund III, L.P.",
+      "CA": "8",
+      "PCAP": "85",
+      "FS": "49",
+      "Total": "142",
+      "Completed": "135"
+    },
+    {
+      "DealName": "DPE Germany IV Feeder Fund (Jersey) LP",
+      "CA": "35",
+      "PCAP": "43",
+      "FS": "63",
+      "Total": "141",
+      "Completed": "103"
+    },
+    {
+      "DealName": "KKR Global Infrastructure Investors IV (USD) SCSp",
+      "CA": "68",
+      "PCAP": "24",
+      "FS": "48",
+      "Total": "140",
+      "Completed": "137"
+    },
+    {
+      "DealName": "Brasa Real Estate Fund III, LP",
+      "CA": "27",
+      "PCAP": "81",
+      "FS": "32",
+      "Total": "140",
+      "Completed": "135"
+    },
+    {
+      "DealName": "OPC Fund I, LP",
+      "CA": "74",
+      "PCAP": "29",
+      "FS": "37",
+      "Total": "140",
+      "Completed": "139"
+    },
+    {
+      "DealName": "Genstar Capital Partners IX, L.P.",
+      "CA": "45",
+      "PCAP": "28",
+      "FS": "65",
+      "Total": "138",
+      "Completed": "138"
+    },
+    {
+      "DealName": "WPEF VIII Feeder ILP",
+      "CA": "45",
+      "PCAP": "36",
+      "FS": "56",
+      "Total": "137",
+      "Completed": "111"
+    }
+  ],
+  "caTypes": [
+    {
+      "CapitalActivityType": "CapitalCall",
+      "Month": "2025-03",
+      "Cnt": "583"
+    },
+    {
+      "CapitalActivityType": "Distribution",
+      "Month": "2025-03",
+      "Cnt": "827"
+    },
+    {
+      "CapitalActivityType": "DistributionInKind",
+      "Month": "2025-03",
+      "Cnt": "2"
+    },
+    {
+      "CapitalActivityType": "CapitalCall",
+      "Month": "2025-04",
+      "Cnt": "761"
+    },
+    {
+      "CapitalActivityType": "Distribution",
+      "Month": "2025-04",
+      "Cnt": "793"
+    },
+    {
+      "CapitalActivityType": "CapitalCall",
+      "Month": "2025-05",
+      "Cnt": "573"
+    },
+    {
+      "CapitalActivityType": "Distribution",
+      "Month": "2025-05",
+      "Cnt": "697"
+    },
+    {
+      "CapitalActivityType": "DistributionInKind",
+      "Month": "2025-05",
+      "Cnt": "2"
+    },
+    {
+      "CapitalActivityType": "CapitalCall",
+      "Month": "2025-06",
+      "Cnt": "898"
+    },
+    {
+      "CapitalActivityType": "Distribution",
+      "Month": "2025-06",
+      "Cnt": "1063"
+    },
+    {
+      "CapitalActivityType": "DistributionInKind",
+      "Month": "2025-06",
+      "Cnt": "3"
+    },
+    {
+      "CapitalActivityType": "CapitalCall",
+      "Month": "2025-07",
+      "Cnt": "785"
+    },
+    {
+      "CapitalActivityType": "Distribution",
+      "Month": "2025-07",
+      "Cnt": "938"
+    },
+    {
+      "CapitalActivityType": "DistributionInKind",
+      "Month": "2025-07",
+      "Cnt": "8"
+    },
+    {
+      "CapitalActivityType": "CapitalCall",
+      "Month": "2025-08",
+      "Cnt": "539"
+    },
+    {
+      "CapitalActivityType": "Distribution",
+      "Month": "2025-08",
+      "Cnt": "690"
+    },
+    {
+      "CapitalActivityType": "DistributionInKind",
+      "Month": "2025-08",
+      "Cnt": "11"
+    },
+    {
+      "CapitalActivityType": "CapitalCall",
+      "Month": "2025-09",
+      "Cnt": "1050"
+    },
+    {
+      "CapitalActivityType": "Distribution",
+      "Month": "2025-09",
+      "Cnt": "874"
+    },
+    {
+      "CapitalActivityType": "DistributionInKind",
+      "Month": "2025-09",
+      "Cnt": "11"
+    },
+    {
+      "CapitalActivityType": "CapitalCall",
+      "Month": "2025-10",
+      "Cnt": "763"
+    },
+    {
+      "CapitalActivityType": "Distribution",
+      "Month": "2025-10",
+      "Cnt": "862"
+    },
+    {
+      "CapitalActivityType": "CapitalCall",
+      "Month": "2025-11",
+      "Cnt": "557"
+    },
+    {
+      "CapitalActivityType": "Distribution",
+      "Month": "2025-11",
+      "Cnt": "757"
+    },
+    {
+      "CapitalActivityType": "DistributionInKind",
+      "Month": "2025-11",
+      "Cnt": "4"
+    },
+    {
+      "CapitalActivityType": "CapitalCall",
+      "Month": "2025-12",
+      "Cnt": "1169"
+    },
+    {
+      "CapitalActivityType": "Distribution",
+      "Month": "2025-12",
+      "Cnt": "1688"
+    },
+    {
+      "CapitalActivityType": "DistributionInKind",
+      "Month": "2025-12",
+      "Cnt": "7"
+    },
+    {
+      "CapitalActivityType": "CapitalCall",
+      "Month": "2026-01",
+      "Cnt": "690"
+    },
+    {
+      "CapitalActivityType": "Distribution",
+      "Month": "2026-01",
+      "Cnt": "755"
+    },
+    {
+      "CapitalActivityType": "DistributionInKind",
+      "Month": "2026-01",
+      "Cnt": "11"
+    },
+    {
+      "CapitalActivityType": "CapitalCall",
+      "Month": "2026-02",
+      "Cnt": "479"
+    },
+    {
+      "CapitalActivityType": "Distribution",
+      "Month": "2026-02",
+      "Cnt": "668"
+    },
+    {
+      "CapitalActivityType": "DistributionInKind",
+      "Month": "2026-02",
+      "Cnt": "3"
+    },
+    {
+      "CapitalActivityType": "CapitalCall",
+      "Month": "2026-03",
+      "Cnt": "358"
+    },
+    {
+      "CapitalActivityType": "Distribution",
+      "Month": "2026-03",
+      "Cnt": "268"
+    },
+    {
+      "CapitalActivityType": "DistributionInKind",
+      "Month": "2026-03",
+      "Cnt": "5"
+    }
+  ]
+}
