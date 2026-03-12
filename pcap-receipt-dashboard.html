@@ -233,9 +233,9 @@
     </div>
   </div>
   <div class="period-pills">
-    <span class="period-pill pill-q4">Q4 2025 Baseline</span>
+    <span class="period-pill pill-q4">Q3 2025 Baseline</span>
     <span class="pill-sep">→</span>
-    <span class="period-pill pill-q1">Q1 2026 Current</span>
+    <span class="period-pill pill-q1">Q4 2025 Current</span>
   </div>
 </div>
 
@@ -246,28 +246,28 @@
     <div class="kpi-card" style="--accent:var(--amber)">
       <div class="kpi-icon">✅</div>
       <div class="kpi-val">2,602</div>
-      <div class="kpi-label">Q4 2025 Received</div>
+      <div class="kpi-label">Q3 2025 Received</div>
     </div>
     <div class="kpi-card" style="--accent:var(--green)">
       <div class="kpi-icon">📬</div>
       <div class="kpi-val">73</div>
-      <div class="kpi-label">Q1 2026 Received</div>
+      <div class="kpi-label">Q4 2025 Received</div>
     </div>
     <div class="kpi-card" style="--accent:var(--red)">
       <div class="kpi-icon">⚠️</div>
       <div class="kpi-val">2,529</div>
-      <div class="kpi-label">Q1 2026 Missing</div>
+      <div class="kpi-label">Q4 2025 Missing</div>
     </div>
   </div>
 
   <!-- Charts -->
   <div class="charts-row">
     <div class="chart-card">
-      <div class="chart-title">Q1 2026 Receipt Status by Document Type</div>
+      <div class="chart-title">Q4 2025 Receipt Status by Document Type</div>
       <div class="chart-wrap"><canvas id="statusChart"></canvas></div>
     </div>
     <div class="chart-card">
-      <div class="chart-title">Q4 vs Q1 Comparison by Document Type</div>
+      <div class="chart-title">Q3 vs Q4 Comparison by Document Type</div>
       <div class="chart-wrap"><canvas id="compareChart"></canvas></div>
     </div>
   </div>
@@ -285,7 +285,7 @@
     </div>
     <div class="filter-divider"></div>
     <div class="filter-group">
-      <span class="filter-label">Q1 Status</span>
+      <span class="filter-label">Q4 Status</span>
       <div class="btn-group" id="statusGroup">
         <button class="btn-filter active" onclick="setFilter('status','all',this)">All</button>
         <button class="btn-filter" onclick="setFilter('status','Received',this)">Received</button>
@@ -303,7 +303,7 @@
     </div>
     <div class="filter-divider"></div>
     <div class="filter-group">
-      <span class="filter-label">Q4 Received</span>
+      <span class="filter-label">Q3 Received</span>
       <div class="date-range">
         <input type="date" class="date-input" id="q4DateFrom" onchange="applyFilters()" title="From">
         <span class="date-range-sep">→</span>
@@ -312,7 +312,7 @@
     </div>
     <div class="filter-divider"></div>
     <div class="filter-group">
-      <span class="filter-label">Q1 Received</span>
+      <span class="filter-label">Q4 Received</span>
       <div class="date-range">
         <input type="date" class="date-input" id="q1DateFrom" onchange="applyFilters()" title="From">
         <span class="date-range-sep">→</span>
@@ -370,12 +370,12 @@
             <th onclick="sortTable('deal')">Deal <span id="sort-deal">↑</span></th>
             <th onclick="sortTable('le')">Legal Entity <span id="sort-le"></span></th>
             <th onclick="sortTable('docType')">Doc Type <span id="sort-docType"></span></th>
-            <th onclick="sortTable('q4')">Q4 2025 <span id="sort-q4"></span></th>
+            <th onclick="sortTable('q4')">Q3 2025 <span id="sort-q4"></span></th>
+            <th>Q3 CanoeID</th>
+            <th onclick="sortTable('q4date')">Q3 Received (CT) <span id="sort-q4date"></span></th>
+            <th onclick="sortTable('q1')">Q4 2025 <span id="sort-q1"></span></th>
             <th>Q4 CanoeID</th>
-            <th onclick="sortTable('q4date')">Q4 Received (CT) <span id="sort-q4date"></span></th>
-            <th onclick="sortTable('q1')">Q1 2026 <span id="sort-q1"></span></th>
-            <th>Q1 CanoeID</th>
-            <th onclick="sortTable('q1date')">Q1 Received (CT) <span id="sort-q1date"></span></th>
+            <th onclick="sortTable('q1date')">Q4 Received (CT) <span id="sort-q1date"></span></th>
             <th>Draft Email</th>
             <th class="fm-cell" onclick="sortTable('fm')">FM Contacted <span id="sort-fm"></span></th>
           </tr>
@@ -427,14 +427,14 @@ function draftEmail(deal, le, docType){
   const src  = CONTACTS[key] || {};
   const toAddr = src.perei || src.cic || src.nps || '';
   const cc = 'skamaraj@gcmlp.com;nkumar@gcmlp.com;psunkey@gcmlp.com;pgajarla@gcmlp.com;dfrancis@gcmlp.com;mvadapalli@gcmlp.com;rgattu@gcmlp.com;dmateam@gcmlp.com;abgeorge@gcmlp.com';
-  const subject = 'Request for Q1 2026 Valuations';
+  const subject = 'Request for Q4 2025 Valuations';
   const body =
     'Dear Fund Manager,' +
-    '\n\nAs a result of public company reporting obligations, GCM Grosvenor (\'GCM\') is required to gather valuations from our fund managers on an accelerated timeline. In order to assist us in meeting our reporting obligations, we are reaching out to you today to kindly ask you provide us with a Q1 2026 Partnership Capital Account Statement(s) (\u2018PCAP\u2019) for the following investment(s) no later than [PLEASE INSERT DATE]:' +
+    '\n\nAs a result of public company reporting obligations, GCM Grosvenor (\'GCM\') is required to gather valuations from our fund managers on an accelerated timeline. In order to assist us in meeting our reporting obligations, we are reaching out to you today to kindly ask you provide us with a Q4 2025 Partnership Capital Account Statement(s) (\u2018PCAP\u2019) for the following investment(s) no later than [PLEASE INSERT DATE]:' +
     '\n\nDeal: ' + deal +
     '\nProduct: ' + le +
     '\nDoc Type: ' + docType +
-    '\n\nIf the Q1 2026 PCAPs are not yet available, we ask that you please provide us with a DRAFT or Estimated Q1 2026 capital account statement(s).' +
+    '\n\nIf the Q4 2025 PCAPs are not yet available, we ask that you please provide us with a DRAFT or Estimated Q4 2025 capital account statement(s).' +
     '\n\nWe understand that you may not normally be required to provide year-end PCAPs within this time frame and appreciate your cooperation in helping us meet our reporting obligations.' +
     '\n\nPlease let us know if you have any questions.' +
     '\n\nRegards,' +
@@ -465,8 +465,8 @@ new Chart(document.getElementById('statusChart').getContext('2d'),{type:'bar',da
 ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#8b97b0',font:{family:'Inter',size:12}}}},scales:{x:{stacked:true,grid:{color:'rgba(42,48,64,.6)'},ticks:{color:'#8b97b0'}},y:{stacked:true,grid:{color:'rgba(42,48,64,.6)'},ticks:{color:'#8b97b0'}}}}});
 
 new Chart(document.getElementById('compareChart').getContext('2d'),{type:'bar',data:{labels:['Account Statement','Financials'],datasets:[
-  {label:'Q4 2025 (Baseline)',data:[acctReceived+acctMissing,finReceived+finMissing],backgroundColor:'rgba(250,191,36,.7)',borderColor:'#fbbf24',borderWidth:1,borderRadius:6},
-  {label:'Q1 2026 Received', data:[acctReceived,finReceived],                        backgroundColor:'rgba(34,211,238,.7)', borderColor:'#22d3ee',borderWidth:1,borderRadius:6}
+  {label:'Q3 2025 (Baseline)',data:[acctReceived+acctMissing,finReceived+finMissing],backgroundColor:'rgba(250,191,36,.7)',borderColor:'#fbbf24',borderWidth:1,borderRadius:6},
+  {label:'Q4 2025 Received', data:[acctReceived,finReceived],                        backgroundColor:'rgba(34,211,238,.7)', borderColor:'#22d3ee',borderWidth:1,borderRadius:6}
 ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#8b97b0',font:{family:'Inter',size:12}}}},scales:{x:{grid:{color:'rgba(42,48,64,.6)'},ticks:{color:'#8b97b0'}},y:{grid:{color:'rgba(42,48,64,.6)'},ticks:{color:'#8b97b0'},beginAtZero:true}}}});
 
 // Segment counts
@@ -651,12 +651,12 @@ async function exportExcel(){
       {header:'Legal Entity',  key:'le',      width:42},
       {header:'Admin Type',    key:'admin',   width:14},
       {header:'Doc Type',      key:'docType', width:22},
-      {header:'Q4 2025',       key:'q4',      width:16},
-      {header:'Q4 CanoeID',       key:'q4url',    width:20},
-      {header:'Q4 Received (CT)', key:'q4recvct', width:20},
-      {header:'Q1 2026',       key:'q1',      width:16},
-      {header:'Q1 CanoeID',       key:'q1url',    width:20},
-      {header:'Q1 Received (CT)', key:'q1recvct', width:20},
+      {header:'Q3 2025',       key:'q4',      width:16},
+      {header:'Q3 CanoeID',       key:'q4url',    width:20},
+      {header:'Q3 Received (CT)', key:'q4recvct', width:20},
+      {header:'Q4 2025',       key:'q1',      width:16},
+      {header:'Q4 CanoeID',       key:'q1url',    width:20},
+      {header:'Q4 Received (CT)', key:'q1recvct', width:20},
       {header:'FM Contacted',  key:'fm',      width:16},
     ];
 
