@@ -324,12 +324,10 @@
             <th onclick="sortTable('docType')">Doc Type <span id="sort-docType"></span></th>
             <th onclick="sortTable('q4')">Q4 2025 <span id="sort-q4"></span></th>
             <th>Q4 CanoeID</th>
-            <th onclick="sortTable('q4date')">Q4 Date (CT) <span id="sort-q4date"></span></th>
-            <th>Q4 Time (CT)</th>
+            <th onclick="sortTable('q4date')">Q4 Received (CT) <span id="sort-q4date"></span></th>
             <th onclick="sortTable('q1')">Q1 2026 <span id="sort-q1"></span></th>
             <th>Q1 CanoeID</th>
-            <th onclick="sortTable('q1date')">Q1 Date (CT) <span id="sort-q1date"></span></th>
-            <th>Q1 Time (CT)</th>
+            <th onclick="sortTable('q1date')">Q1 Received (CT) <span id="sort-q1date"></span></th>
             <th class="fm-cell" onclick="sortTable('fm')">FM Contacted <span id="sort-fm"></span></th>
           </tr>
           <tr class="col-search">
@@ -340,8 +338,6 @@
             <th></th>
             <th></th>
             <th></th>
-            <th></th>
-            <th></th>
             <th>
               <select class="col-search-input" id="cs-q1" onchange="applyFilters()" style="appearance:auto">
                 <option value="">All</option>
@@ -349,7 +345,6 @@
                 <option value="Not Received">Not Received</option>
               </select>
             </th>
-            <th></th>
             <th></th>
             <th></th>
             <th>
@@ -463,7 +458,7 @@ function applyFilters(){
 
 function sortTable(key){
   if(sortKey===key) sortDir*=-1; else{sortKey=key;sortDir=1;}
-  ['deal','le','docType','q4','q4date','q1','q1date','fm'].forEach(k=>{
+  ['deal','le','docType','q4','q4date','q1','q1date','fm'].forEach(k=>{ // q4date/q1date span id still used
     const el=document.getElementById('sort-'+k);
     if(el) el.textContent = sortKey===k ? (sortDir===1?' \u2191':' \u2193') : '';
   });
@@ -492,7 +487,7 @@ function render(){
   document.getElementById('resultsCount').textContent=total.toLocaleString()+' records';
 
   if(!rows.length){
-    tbody.innerHTML='<tr class="empty-row"><td colspan="15">No records match the current filters</td></tr>';
+    tbody.innerHTML='<tr class="empty-row"><td colspan="11">No records match the current filters</td></tr>';
   } else {
     tbody.innerHTML=rows.map(r=>{
       const isLp=LP_ADMIN_IDS.has(r.leId);
@@ -508,12 +503,10 @@ function render(){
         +'<td><span class="doc-badge">'+docLabel(r.docType)+'</span></td>'
         +'<td><span class="status-pill pill-received">&#9679; Received</span></td>'
         +'<td>'+(r.q4url?'<a href="'+esc(r.q4url)+'" target="_blank" class="canoe-link">'+esc(r.q4id?r.q4id.substring(0,8)+'…':'')+'</a>':'<span class="na-text">N/A</span>')+'</td>'
-        +'<td>'+(r.q4date?'<span class="dt-text">'+esc(r.q4date)+'</span>':'<span class="dt-na">—</span>')+'</td>'
-        +'<td>'+(r.q4time?'<span class="dt-text">'+esc(r.q4time)+'</span>':'<span class="dt-na">—</span>')+'</td>'
+        +'<td>'+(r.q4date?'<span class="dt-text">'+esc(r.q4date)+' '+esc(r.q4time||'')+'</span>':'<span class="dt-na">—</span>')+'</td>'
         +'<td><span class="status-pill '+q1Cls+'">&#9679; '+esc(r.q1)+'</span></td>'
         +'<td>'+(r.q1url?'<a href="'+esc(r.q1url)+'" target="_blank" class="canoe-link">'+esc(r.q1id?r.q1id.substring(0,8)+'…':'')+'</a>':'<span class="na-text">N/A</span>')+'</td>'
-        +'<td>'+(r.q1date?'<span class="dt-text">'+esc(r.q1date)+'</span>':'<span class="dt-na">—</span>')+'</td>'
-        +'<td>'+(r.q1time?'<span class="dt-text">'+esc(r.q1time)+'</span>':'<span class="dt-na">—</span>')+'</td>'
+        +'<td>'+(r.q1date?'<span class="dt-text">'+esc(r.q1date)+' '+esc(r.q1time||'')+'</span>':'<span class="dt-na">—</span>')+'</td>'
         +'<td class="fm-cell"><input type="checkbox" class="fm-check" '+(checked?'checked':'')
           +' data-key="'+esc(key)+'" onchange="toggleFM(this)" title="FM Contacted"></td>'
         +'</tr>';
@@ -564,13 +557,11 @@ async function exportExcel(){
       {header:'Admin Type',    key:'admin',   width:14},
       {header:'Doc Type',      key:'docType', width:22},
       {header:'Q4 2025',       key:'q4',      width:16},
-      {header:'Q4 CanoeID',    key:'q4url',   width:20},
-      {header:'Q4 Date (CT)',  key:'q4date',  width:14},
-      {header:'Q4 Time (CT)',  key:'q4time',  width:12},
+      {header:'Q4 CanoeID',       key:'q4url',    width:20},
+      {header:'Q4 Received (CT)', key:'q4recvct', width:20},
       {header:'Q1 2026',       key:'q1',      width:16},
-      {header:'Q1 CanoeID',    key:'q1url',   width:20},
-      {header:'Q1 Date (CT)',  key:'q1date',  width:14},
-      {header:'Q1 Time (CT)',  key:'q1time',  width:12},
+      {header:'Q1 CanoeID',       key:'q1url',    width:20},
+      {header:'Q1 Received (CT)', key:'q1recvct', width:20},
       {header:'FM Contacted',  key:'fm',      width:16},
     ];
 
@@ -602,10 +593,10 @@ async function exportExcel(){
         docType:r.docType==='Account Statement'?'PCAP':r.docType==='Financials'?'FS':r.docType,
         q4:     'Received',
         q4url:  r.q4url || '',
-        q4date: r.q4date || '',  q4time: r.q4time || '',
+        q4recvct: r.q4date ? r.q4date + ' ' + (r.q4time||'') : '',
         q1:     r.q1,
         q1url:  r.q1url || 'N/A',
-        q1date: r.q1date || 'N/A',  q1time: r.q1time || 'N/A',
+        q1recvct: r.q1date ? r.q1date + ' ' + (r.q1time||'') : 'N/A',
         fm:     fmVal?'Yes':'No',
       });
       row.height=20;
@@ -689,7 +680,7 @@ async function exportExcel(){
     });
 
     // Auto-filter on header row
-    ws.autoFilter={from:'A1',to:'M1'};
+    ws.autoFilter={from:'A1',to:'K1'};
 
     // Generate and download
     const buf=await wb.xlsx.writeBuffer();
