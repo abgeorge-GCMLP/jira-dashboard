@@ -84,6 +84,14 @@
   }
   .date-input:focus { border-color:var(--cyan); }
   .date-range { display:flex;align-items:center;gap:6px; }
+  .canoe-id-search {
+    width:240px;min-height:54px;max-height:130px;resize:vertical;
+    background:var(--surface2);border:1px solid var(--border);border-radius:8px;
+    color:var(--text);font-size:0.78rem;font-family:'Inter',sans-serif;
+    padding:6px 10px;outline:none;transition:border-color .15s;line-height:1.5;
+  }
+  .canoe-id-search:focus { border-color:var(--cyan); }
+  .canoe-id-search::placeholder { color:var(--muted); }
   .date-range-sep { font-size:0.75rem;color:var(--muted); }
   .btn-group { display:flex;gap:4px; }
   .btn-filter {
@@ -355,6 +363,13 @@
         </button>
       </div>
     </div>
+    <div class="filter-divider"></div>
+    <div class="filter-group" style="align-items:flex-start">
+      <span class="filter-label" style="padding-top:6px">Canoe IDs</span>
+      <textarea class="canoe-id-search" id="canoeIdSearch"
+        placeholder="Paste one or more Canoe IDs&#10;(comma or newline separated)"
+        oninput="applyFilters()"></textarea>
+    </div>
     <button class="clear-btn" id="clearColBtn" onclick="clearColFilters()" style="display:none">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
@@ -528,6 +543,7 @@ function clearColFilters(){
   ['cs-deal','cs-le','cs-doc'].forEach(id=>{ document.getElementById(id).value=''; });
   ['cs-q1','cs-fm'].forEach(id=>{ document.getElementById(id).value=''; });
   ['q4DateFrom','q4DateTo','q1DateFrom','q1DateTo'].forEach(id=>{ document.getElementById(id).value=''; });
+  document.getElementById('canoeIdSearch').value='';
   document.getElementById('clearColBtn').style.display='none';
   applyFilters();
 }
@@ -542,13 +558,20 @@ function applyFilters(){
   const q4To      = document.getElementById('q4DateTo').value;
   const q1From    = document.getElementById('q1DateFrom').value;
   const q1To      = document.getElementById('q1DateTo').value;
-  const anyColFilter = csDeal || csLE || csDoc || csQ1 || csFm || q4From || q4To || q1From || q1To;
+  const canoeRaw  = document.getElementById('canoeIdSearch').value;
+  const canoeIds  = canoeRaw.split(/[\n,\s]+/).map(s=>s.trim().toLowerCase()).filter(Boolean);
+  const anyColFilter = csDeal || csLE || csDoc || csQ1 || csFm || q4From || q4To || q1From || q1To || canoeIds.length;
   document.getElementById('clearColBtn').style.display = anyColFilter ? '' : 'none';
   const dt=activeFilters.docType, st=activeFilters.status, fm=activeFilters.fm;
 
   filtered=RAW.filter(r=>{
     if(adminMode==='lp' && !LP_ADMIN_IDS.has(r.leId)) return false;
     if(adminMode==='gp' &&  LP_ADMIN_IDS.has(r.leId)) return false;
+    if(canoeIds.length){
+      const q4 = (r.q4id||'').toLowerCase();
+      const q1 = (r.q1id||'').toLowerCase();
+      if(!canoeIds.some(id => q4.startsWith(id) || q1.startsWith(id))) return false;
+    }
     if(csDeal && !r.deal.toLowerCase().includes(csDeal)) return false;
     if(csLE   && !r.le.toLowerCase().includes(csLE))     return false;
     if(csDoc  && !r.docType.toLowerCase().includes(csDoc)) return false;
