@@ -181,11 +181,17 @@
   .status-pill { display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:0.74rem;font-weight:600;white-space:nowrap; }
   .pill-received { background:rgba(74,222,128,.12);color:var(--green);border:1px solid rgba(74,222,128,.25); }
   .pill-missing  { background:rgba(248,113,113,.12);color:var(--red);  border:1px solid rgba(248,113,113,.25); }
-  /* FM Contacted checkbox */
-  .fm-cell { text-align:center;width:50px; }
-  .fm-check {
-    width:17px;height:17px;cursor:pointer;accent-color:var(--green);
-    border-radius:4px;transition:all .15s;
+  /* FM Contacted display badge */
+  .fm-cell { text-align:center;width:60px; }
+  .fm-badge {
+    display:inline-flex;align-items:center;justify-content:center;
+    width:28px;height:28px;border-radius:50%;
+    border:2px solid rgba(74,222,128,.25);color:transparent;
+    font-size:14px;transition:all .2s;
+  }
+  .fm-badge.contacted {
+    background:rgba(74,222,128,.15);border-color:var(--green);
+    color:var(--green);
   }
 
   /* Pagination */
@@ -550,13 +556,17 @@ function sortTable(key){
 
 function changePageSize(val){pageSize=parseInt(val);page=1;render();}
 
-function toggleFM(cb){
-  const key = cb.dataset.key;
-  FM.set(key, cb.checked);
+function markFM(btn){
+  const key = btn.dataset.key;
+  FM.set(key, true);
   saveFM();
-  const row = cb.closest('tr');
+  // Update FM badge in same row
+  const row = btn.closest('tr');
+  const badge = row.querySelector('.fm-badge');
+  if(badge) badge.classList.add('contacted');
+  // Update row tick
   const tick = row.querySelector('.row-tick');
-  if(tick) tick.classList.toggle('visible', cb.checked);
+  if(tick) tick.classList.add('visible');
 }
 
 function render(){
@@ -591,10 +601,9 @@ function render(){
         +'<td>'+(r.q1url?'<a href="'+esc(r.q1url)+'" target="_blank" class="canoe-link">'+esc(r.q1id?r.q1id.substring(0,8)+'…':'')+'</a>':'<span class="na-text">N/A</span>')+'</td>'
         +'<td>'+(r.q1date?'<span class="dt-text">'+esc(r.q1date)+' '+esc(r.q1time||'')+'</span>':'<span class="dt-na">—</span>')+'</td>'
         +'<td class="draft-cell">'
-          +(r.q1==='Not Received'?'<button class="draft-btn" onclick="draftEmail(this.dataset.deal,this.dataset.le,this.dataset.doc)" data-deal="'+esc(r.deal)+'" data-le="'+esc(r.le)+'" data-doc="'+esc(r.docType)+'">&#9993; Draft Email</button>':'')
+          +(r.q1==='Not Received'?'<button class="draft-btn" onclick="markFM(this);draftEmail(this.dataset.deal,this.dataset.le,this.dataset.doc)" data-deal="'+esc(r.deal)+'" data-le="'+esc(r.le)+'" data-doc="'+esc(r.docType)+'" data-key="'+esc(key)+'">&#9993; Draft Email</button>':'')
         +'</td>'
-        +'<td class="fm-cell"><input type="checkbox" class="fm-check" '+(checked?'checked':'')
-          +' data-key="'+esc(key)+'" onchange="toggleFM(this)" title="FM Contacted"></td>'
+        +'<td class="fm-cell"><span class="fm-badge'+(checked?' contacted':'')+'">&#10003;</span></td>'
         +'</tr>';
     }).join('');
   }
