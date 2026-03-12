@@ -629,7 +629,7 @@ function getPageRange(c,t){
   return[1,'...',c-1,c,c+1,'...',t];
 }
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function docLabel(dt){ return dt==='Account Statement'?'PCAP':dt==='Financials'?'FS':esc(dt); }
+function docLabel(dt){ return dt==='Financials'?'Financial Statement':esc(dt); }
 
 // ── Export to Excel ──
 async function exportExcel(){
