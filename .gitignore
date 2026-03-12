@@ -1,0 +1,12 @@
+# Contact files — contain email addresses, keep off public repo
+*.csv
+CIC_Epic List.xlsx
+GP contacts NPS Feb 2026.xlsx
+PEREI Funds*.xlsx
+
+# Raw SQL output
+pcap_tsv2.txt
+pcap_data_with_id.txt
+
+# Node
+node_modules/
